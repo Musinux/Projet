@@ -160,7 +160,7 @@ void grille(int **grille){
 }
 
 int** creeTab(){
-    int **tab;
+    int **tab,i;
     tab =(int*) malloc(TAI*sizeof(int*));
 
     for(i=0;i<TAI;i++){
