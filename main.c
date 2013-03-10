@@ -65,7 +65,7 @@ void calcJeu(int **tab)
     #ifdef DEBUG
     printf("\n\n");
     #endif
-    int i,j,k,l[TAI]={0},m=0,n;
+    int i,j,k,l[TAI]={0},m=0;
 
     // i et j sont des compteurs.
     // k est une variable qui prend +1 lorsqu'on ajoute un 1 à une ligne, et -1 lorsqu'on ajoute un 0.
@@ -97,8 +97,8 @@ void calcJeu(int **tab)
                     break;
                 }
             }
-            else if(j>=2 && tab[i][j-1]==tab[i][j-2]){ // si juste la colonne a deux chiffres identiques
-                if((l[j]==1 && tab[i][j-1]==0) || (l[j]==-1 && tab[i][j-1]==1)){
+            else if(j>=2 && tab[i][j-1]==tab[i][j-2]){ // si juste la ligne a deux chiffres identiques
+                if(((l[j]==1 || k==2) && tab[i][j-1]==0) || ((l[j]==-1 || k==-2) && tab[i][j-1]==1)){
                     calcIndice(l,tab,&i,&m,k,5);
                     break;
                 }
@@ -109,8 +109,8 @@ void calcJeu(int **tab)
                     #endif
                 }
             }
-            else if(i>=2 && tab[i-1][j]==tab[i-2][j]){ // si juste la ligne a deux chiffres identiques
-                if((k==1 && tab[i-1][j]==0) || (k==-1 && tab[i-1][j]==1)){
+            else if(i>=2 && tab[i-1][j]==tab[i-2][j]){ // si juste la colonne a deux chiffres identiques
+                if(((l[j]==2 || k==1) && tab[i-1][j]==0) || ((l[j]==-2 || k==-1) && tab[i-1][j]==1)){
                     calcIndice(l,tab,&i,&m,k,6);
                     break;
                 }
@@ -233,21 +233,12 @@ void grille(int **grille){
     int i,j,alea;
     FILE *fgrille= fopen("grilles.txt","r");
     alea = rand()%4;
-    switch(alea)
-    {
-        case 1:
-            for(i=0;i<73;i++)
-                fgetc(fgrille);
-            break;
-        case 2:
-            for(i=0;i<146;i++)
-                fgetc(fgrille);
-            break;
-        case 3:
-            for(i=0;i<219;i++)
-                fgetc(fgrille);
-            break;
-    }
+
+
+    // on se déplace jusqu'à la bonne grille
+    for(i=0;i<73*alea;i++)
+        fgetc(fgrille);
+
     for(i=0;i<TAI;i++){
         for(j=0;j<TAI;j++)
         {
@@ -269,23 +260,91 @@ int** creeTab(){
     return tab;
 }
 
-int main()
-{
-    int **tab;
+void supprTab(int **tab){
     int i;
-    tab = creeTab();
-
-    calcJeu(tab);
-    affJeu(tab);
-
-    //printf("\n\n");
-    //grille(tab);
-    //affJeu(tab);
-
-    printf("\n");
     for(i=0;i<TAI;i++){
         free(tab[i]);
     }
     free(tab);
+}
+
+int verifGrille(int **tab){
+    int i,j,cpt=0,k,l[TAI]={0};
+    for(i=0;i<TAI;i++) {
+        for(j=0;j<TAI;j++) {
+            cpt = tab[i][j]?cpt+1:cpt-1;
+        }
+    }
+    if(cpt!=0)
+        return -100;
+    else{
+        for(i=0;i<TAI;i++) {
+            for(j=0;j<TAI;j++) {
+                if(j==0) // au début on met le compteur à 0
+                    k=0;
+
+                // dans le cas où en ligne et en colonne on a deux chiffres identiques qui se succèdent
+                if((j>=2 && tab[i][j-1]==tab[i][j-2]) && (i>=2 && tab[i-1][j]==tab[i-2][j])){
+                    // si ce sont les mêmes chiffres, la nouvelle case aura l'inverse
+                    if(tab[i][j-1]!=tab[i-1][j]){
+                        return -90;
+                    }
+                }
+                else if(j>=2 && tab[i][j-1]==tab[i][j-2]){ // si juste la colonne a deux chiffres identiques
+                    if((k==1 && tab[i][j-1]==0) || (k==-1 && tab[i][j-1]==1) || (tab[i][j]==tab[i][j-1])){
+
+                        return -80;
+                    }
+                }
+                else if(i>=2 && tab[i-1][j]==tab[i-2][j]){ // si juste la ligne a deux chiffres identiques
+                    if((l[j]==1 && tab[i-1][j]==0) || (l[j]==-1 && tab[i-1][j]==1) || (tab[i][j]==tab[i-1][j])){
+                        return -70;
+                    }
+                }
+                else if((k==2 && l[j]==-2)||(k==-2 && l[j]==2))  { // si on se retrouve avec des valeurs inverses pour k et l[]
+                    return -60;
+                }
+                else if(k==2 || l[j]==2) { // cas où on a trop de 1
+                    if(((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))) && tab[i][j]!=0){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
+                        return -50;
+                    }
+                }
+                else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
+                    if(((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))) && tab[i][j]!=1){
+                        printf("\n\ni:%d   \nj:%d   \ntab[%d][%d]:%d   \ntab[%d][%d]:%d  \ntab[%d][%d]:%d  \nk:%d  \nl[%d]:%d",i,j,i,j,tab[i][j],i,j-1,tab[i][j-1],i,j-2,tab[i][j-2],k,j,l[j]);
+                        return -40;
+                    }
+                }
+                else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
+                    if(((j==i && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))) || (j==TAI-1 && ((k==-1 && tab[i][j]==0)|| (k==1 && tab[i][j]==1))) || (i==TAI-1 && ((l[j]==-1 && tab[i][j]==0)|| (l[j]==1 && tab[i][j]==1))) ){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
+                        return -30;
+                    }
+                }
+                k=tab[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
+                l[j]=tab[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
+            }
+        }
+    }
+    return 1;
+}
+
+int main()
+{
+    int **tab;
+    int i,j=1;
+    tab = creeTab();
+    calcJeu(tab);
+    for(i=0;i<100000 && j==1;i++){
+        calcJeu(tab);
+        //grille(tab);
+        j=verifGrille(tab);
+    }
+    affJeu(tab);
+    printf("\n\n%d",verifGrille(tab));
+
+    printf("\n");
+
+    supprTab(tab);
+
     return 0;
 }
