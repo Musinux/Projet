@@ -1,0 +1,13 @@
+Ce fichier texte permet de suivre l'évolution du projet ainsi que toutes les tâches a efféctué pour celui-ci.
+
+
+Les fonctions à crée:
+  - Un masque pour afficher le jeu
+  - Affichage de la solution
+  - Détermination si la case donné par le joeur est correct
+
+
+Les fonctions qui sont en places:
+  - Le main.c
+  - L'affichage complet de la grille
+  - Le stockage de la grille dans un fichier
