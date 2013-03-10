@@ -159,7 +159,7 @@ void grille(int **grille){
     fclose(fgrille);
 }
 
-int* creeTab(){
+int** creeTab(){
     int **tab;
     tab =(int*) malloc(TAI*sizeof(int*));
 
