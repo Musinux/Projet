@@ -342,9 +342,12 @@ void choixGrille(int **grille,int alea){
 
     // on se déplace jusqu'à la bonne grille
     for(i=0;i<73*alea;i++)
+    {
         fgetc(fgrille);
+    }
 
-    for(i=0;i<TAI;i++){
+    for(i=0;i<TAI;i++)
+    {
         for(j=0;j<TAI;j++)
         {
             if(j==0&&i!=0)
@@ -472,6 +475,7 @@ void mask(int **mask, int alea)
     }
     fclose(fmask);
 }
+
 void affJoueur(int **tab, int **mask)
 {
     int i,j;
@@ -504,6 +508,8 @@ int main()
     choixGrille(tab,alea);
     affJeu(tab);
     mask(masque, alea);
+
+    affJoueur(tab, masque);
     //deplJoueur(tab);
     //affJeu(tab);
     //printf("\n\n%d",verifGrille(tab));
@@ -514,4 +520,3 @@ int main()
 
     return 0;
 }
-
