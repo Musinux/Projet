@@ -478,14 +478,18 @@ int main()
 {
     srand((unsigned)time(NULL));
     int **tab,alea;
+    int **masque;
     int i,j=1;
     alea = rand()%4;
     tab = creeTab();
+    masque = creeTab();
     //genGrille(tab);
+    printf("%d \n\n",alea);
     choixGrille(tab,alea);
     affJeu(tab);
-    deplJoueur(tab);
-    affJeu(tab);
+    mask(masque, alea);
+    //deplJoueur(tab);
+    //affJeu(tab);
     //printf("\n\n%d",verifGrille(tab));
 
     printf("\n");
@@ -494,3 +498,4 @@ int main()
 
     return 0;
 }
+
