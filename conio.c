@@ -2,158 +2,199 @@
  *
  * Written by:
  * Hongli Lai <hongli@telekabel.nl>
- * tkorrovi <tkorrovi@altavista.net> on 2002/02/26. 
+ * tkorrovi <tkorrovi@altavista.net> on 2002/02/26.
  * Andrew Westcott <ajwestco@users.sourceforge.net>
  *
  * Offered for use in the public domain without any warranty.
  */
 
-#ifndef _CONIO_H_
-#define _CONIO_H_
-
+#ifndef _CONIO_C_
+#define _CONIO_C_
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <windows.h>
+#include <string.h>
+#include "conio.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define BLINK 0
+static int __BACKGROUND = BLACK;
+static int __FOREGROUND = LIGHTGRAY;
 
-typedef enum
+
+void
+clrscr ()
 {
-    BLACK,
-    BLUE,
-    GREEN,
-    CYAN,
-    RED,
-    MAGENTA,
-    BROWN,
-    LIGHTGRAY,
-    DARKGRAY,
-    LIGHTBLUE,
-    LIGHTGREEN,
-    LIGHTCYAN,
-    LIGHTRED,
-    LIGHTMAGENTA,
-    YELLOW,
-    WHITE
-} COLORS;
+    DWORD written;
+
+    FillConsoleOutputAttribute (GetStdHandle (STD_OUTPUT_HANDLE),
+      __FOREGROUND + (__BACKGROUND << 4), 2000, (COORD) {0, 0},
+      &written);
+      FillConsoleOutputCharacter (GetStdHandle
+      (STD_OUTPUT_HANDLE), ' ',
+      2000, (COORD) {0, 0}, &written);
+    gotoxy (1, 1);
+}
 
 
-#define cgets  _cgets
-#define cprintf	_cprintf
-#define cputs	_cputs
-#define cscanf	_cscanf
-#define ScreenClear clrscr
+void
+clreol ()
+{
+    COORD coord;
+    DWORD written;
+    CONSOLE_SCREEN_BUFFER_INFO info;
 
-/* blinkvideo */
+    GetConsoleScreenBufferInfo (GetStdHandle (STD_OUTPUT_HANDLE),
+      &info);
+    coord.X = info.dwCursorPosition.X;
+    coord.Y = info.dwCursorPosition.Y;
 
-void clreol (void);
-void clrscr (void);
-
-int _conio_gettext (int left, int top, int right, int bottom,
-                    char *str);
-/* _conio_kbhit */
-
-void delline (void);
-
-/* gettextinfo */
-void gotoxy(int x, int y);
-/*
-highvideo
-insline
-intensevideo
-lowvideo
-movetext
-normvideo
-*/
-
-void puttext (int left, int top, int right, int bottom, char *str);
-
-// Screen Variables
-
-/* ScreenCols
-ScreenGetChar
-ScreenGetCursor
-ScreenMode
-ScreenPutChar
-ScreenPutString
-ScreenRetrieve
-ScreenRows
-ScreenSetCursor
-ScreenUpdate
-ScreenUpdateLine
-ScreenVisualBell
-_set_screen_lines */
-
-void _setcursortype (int type);
-
-void textattr (int _attr);
-
-void textbackground (int color);
-
-void textcolor (int color);
-
-/* textmode */
-
-int wherex (void);
-
-int wherey (void);
-
-/* window */
+    FillConsoleOutputCharacter (GetStdHandle (STD_OUTPUT_HANDLE),
+      ' ', info.dwSize.X - info.dwCursorPosition.X, coord, &written);
+    gotoxy (coord.X, coord.Y);
+}
 
 
+void
+delline()
+{
+    COORD coord;
+    DWORD written;
+    CONSOLE_SCREEN_BUFFER_INFO info;
 
-/*  The code below was part of Mingw's conio.h  */
-/*
- * conio.h
- *
- * Low level console I/O functions. Pretty please try to use the ANSI
- * standard ones if you are writing new code.
- *
- * This file is part of the Mingw32 package.
- *
- * Contributors:
- *  Created by Colin Peters <colin@bird.fu.is.saga-u.ac.jp>
- *
- *  THIS SOFTWARE IS NOT COPYRIGHTED
- *
- *  This source code is offered for use in the public domain. You may
- *  use, modify or distribute it freely.
- *
- *  This code is distributed in the hope that it will be useful but
- *  WITHOUT ANY WARRANTY. ALL WARRANTIES, EXPRESS OR IMPLIED ARE HEREBY
- *  DISCLAMED. This includes but is not limited to warranties of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * $Revision: 1.4 $
- * $Author: hongli $
- * $Date: 2002/04/26 19:31:25 $
- *
- */
+    GetConsoleScreenBufferInfo (GetStdHandle (STD_OUTPUT_HANDLE),
+      &info);
+    coord.X = info.dwCursorPosition.X;
+    coord.Y = info.dwCursorPosition.Y;
 
-char*	_cgets (char*);
-int	_cprintf (const char*, ...);
-int	_cputs (const char*);
-int	_cscanf (char*, ...);
-
-int	_getch (void);
-int	_getche (void);
-int	_kbhit (void);
-int	_putch (int);
-int	_ungetch (int);
+    FillConsoleOutputCharacter (GetStdHandle (STD_OUTPUT_HANDLE),
+      ' ', info.dwSize.X * info.dwCursorPosition.Y, coord, &written);
+    gotoxy (info.dwCursorPosition.X + 1,
+    info.dwCursorPosition.Y + 1);
+}
 
 
-int	getch (void);
-int	getche (void);
-int	kbhit (void);
-int	putch (int);
-int	ungetch (int);
+int
+_conio_gettext (int left, int top, int right, int bottom,
+  char *str)
+{
+    int i, j, n;
+    SMALL_RECT r;
+    CHAR_INFO buffer[25][80];
+
+    r = (SMALL_RECT) {left - 1, top - 1, right - 1, bottom - 1};
+    ReadConsoleOutput (GetStdHandle (STD_OUTPUT_HANDLE),
+      (PCHAR_INFO) buffer, (COORD) {80, 25}, (COORD) {0, 0}, &r);
+
+    lstrcpy (str, "");
+    for (i = n = 0; i <= bottom - top; i++)
+    for (j = 0; j <= right - left; j++)
+    {
+        str[n] = buffer[i][j].Char.AsciiChar;
+        n++;
+    }
+    str[n] = 0;
+    return 1;
+}
+
+
+void
+gotoxy(int x, int y)
+{
+  COORD c;
+
+  c.X = x - 1;
+  c.Y = y - 1;
+  SetConsoleCursorPosition (GetStdHandle(STD_OUTPUT_HANDLE), c);
+}
+
+
+void
+puttext (int left, int top, int right, int bottom, char *str)
+{
+    int i, j, n;
+    SMALL_RECT r;
+    CHAR_INFO buffer[25][80];
+
+    memset (buffer, 0, sizeof (buffer));
+    r = (SMALL_RECT) {left - 1, top - 1, right - 1, bottom - 1};
+
+    for (i = n = 0; i <= bottom - top; i++)
+    for (j = 0; j <= right - left && str[n] != 0; j++)
+    {
+        buffer[i][j].Char.AsciiChar = str[n];
+        buffer[i][j].Attributes = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED;
+        n++;
+    }
+
+    WriteConsoleOutput (GetStdHandle (STD_OUTPUT_HANDLE),
+      (CHAR_INFO *) buffer, (COORD) {80, 25},
+      (COORD) {0, 0}, &r);
+}
+
+
+void
+_setcursortype (int type)
+{
+    CONSOLE_CURSOR_INFO Info;
+
+    Info.dwSize = type;
+    SetConsoleCursorInfo (GetStdHandle (STD_OUTPUT_HANDLE),
+      &Info);
+}
+
+
+void
+textattr (int _attr)
+{
+    SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), _attr);
+}
+
+
+void
+textbackground (int color)
+{
+    __BACKGROUND = color;
+    SetConsoleTextAttribute (GetStdHandle (STD_OUTPUT_HANDLE),
+      __FOREGROUND + (color << 4));
+}
+
+
+void
+textcolor (int color)
+{
+    __FOREGROUND = color;
+    SetConsoleTextAttribute (GetStdHandle (STD_OUTPUT_HANDLE),
+      color + (__BACKGROUND << 4));
+}
+
+
+int
+wherex ()
+{
+    CONSOLE_SCREEN_BUFFER_INFO info;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    return info.dwCursorPosition.X + 1;
+}
+
+
+int
+wherey ()
+{
+    CONSOLE_SCREEN_BUFFER_INFO info;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    return info.dwCursorPosition.Y + 1;
+}
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _CONIO_H_ */
+#endif /* _CONIO_C_ */
