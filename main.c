@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
+#include "conio.h"
 #define TAI 8
 
 //#define DEBUG 8
@@ -12,12 +14,49 @@ void affJeu(int **tab)
     printf("\n\n");
     for(i=0;i<TAI;i++)
     {
-        printf("\n");
+
         for(j=0;j<TAI;j++)
         {
             printf("%d ",tab[i][j]);
         }
+        printf("\n\n");
     }
+}
+
+void deplJoueur(int **tab)
+{
+    char c,y=3,x=1;
+    gotoxy(x,y);
+    c=getch();
+    while(c!=' ')
+    {
+        if((c=='q' || c=='Q' ) && x>1){ // vers la gauche
+            x-=2;
+        }
+        else if((c=='d' || c=='D') && x<16){ // vers la droite
+            x+=2;
+        }
+        else if((c=='z'||c=='Z') && y>3){ // vers le haut
+            y-=2;
+        }
+        else if((c=='s'||c=='S') && y<18){ //vers le bas
+            y+=2;
+        }
+
+        gotoxy(x,y);
+        c=getch();
+    }
+    while(c!='0' && c!='1'){
+        c=0;
+        gotoxy(1,1);
+        affJeu(tab);
+        gotoxy(x,y);
+        c=getchar();
+        gotoxy(20,20);
+        printf("cool %c",c);
+
+    }
+    tab[(x-1)/2][(y-3)/2]=c-48;
 }
 
 void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
@@ -425,7 +464,9 @@ int main()
     //genGrille(tab);
     choixGrille(tab,alea);
     affJeu(tab);
-    printf("\n\n%d",verifGrille(tab));
+    deplJoueur(tab);
+    affJeu(tab);
+    //printf("\n\n%d",verifGrille(tab));
 
     printf("\n");
 
