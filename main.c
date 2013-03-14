@@ -17,6 +17,21 @@ void affJeu(int **tab)
     }
 }
 
+void affJoueur(int **tab, int **mask)
+{
+    int i,j;
+    printf("\n\n");
+    for(i=0;i<TAI;i++)
+    {
+        printf("\n");
+        for(j=0;j<TAI;j++)
+        {
+            if(mask[i][j]==0)
+                printf("%d",tab[i][j]);
+        }
+    }
+}
+
 void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
 
     // et si deux fois de suite on regénère la même ligne, on repart de la ligne précédente, et ainsi de suite
@@ -228,12 +243,10 @@ void calcJeu(int **tab)
     }
 }
 
-void grille(int **grille){
-    srand((unsigned)time(NULL));
-    int i,j,alea;
-    FILE *fgrille= fopen("grilles.txt","r");
-    alea = rand()%4;
+void grille(int **grille, int alea){
 
+    int i,j;
+    FILE *fgrille= fopen("grilles.txt","r");
 
     // on se déplace jusqu'à la bonne grille
     for(i=0;i<73*alea;i++)
@@ -249,6 +262,27 @@ void grille(int **grille){
     }
     fclose(fgrille);
 }
+
+void masque(int **mask, int alea)
+{
+    int i,j;
+    FILE *fmask= fopen("masque.txt","r");
+
+    // on se déplace jusqu'à la bonne grille
+    for(i=0;i<73*alea;i++)
+        fgetc(fmask);
+
+    for(i=0;i<TAI;i++){
+        for(j=0;j<TAI;j++)
+        {
+            if(j==0&&i!=0)
+                fgetc(fmask);
+            mask[i][j] = (int)fgetc(fmask)-48;
+        }
+    }
+    fclose(fmask);
+}
+
 
 int** creeTab(){
     int **tab,i;
@@ -330,15 +364,24 @@ int verifGrille(int **tab){
 
 int main()
 {
+    srand((unsigned)time(NULL));
     int **tab;
+    int *masque;
     int i,j=1;
+    int alea;
+
     tab = creeTab();
+    masque = creeTab();
+    
+    alea = rand()%4;//création du nombre aléatoire
+
     calcJeu(tab);
     for(i=0;i<100000 && j==1;i++){
         calcJeu(tab);
         //grille(tab);
         j=verifGrille(tab);
     }
+
     affJeu(tab);
     printf("\n\n%d",verifGrille(tab));
 
