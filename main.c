@@ -472,6 +472,22 @@ void mask(int **mask, int alea)
     }
     fclose(fmask);
 }
+void affJoueur(int **tab, int **mask)
+{
+    int i,j;
+    printf("\n\n");
+    for(i=0;i<TAI;i++)
+    {
+        printf("\n");
+        for(j=0;j<TAI;j++)
+        {
+            if(mask[i][j]==0)
+                printf("%d ",tab[i][j]);
+            else
+                printf("# ");
+        }
+    }
+}
 
 int main()
 
