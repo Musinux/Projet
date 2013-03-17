@@ -384,22 +384,22 @@ int verifGrille(int **tab){
     return 1;
 }
 
-void mask(int **mask, int alea)
+void choixMasque(int **masque, int alea)
 {
     int i,j;
-    FILE *fmask= fopen("masque.txt","r");
+    FILE *fmasque= fopen("masque.txt","r");
 
     // on se déplace jusqu'à la bonne grille
     for(i=0;i<73*alea;i++)
-        fgetc(fmask);
+        fgetc(fmasque);
 
     for(i=0;i<TAI;i++){
         for(j=0;j<TAI;j++)
         {
             if(j==0&&i!=0)
-                fgetc(fmask);
-            mask[i][j] = (int)fgetc(fmask)-48;
+                fgetc(fmasque);
+            masque[i][j] = (int)fgetc(fmasque)-48;
         }
     }
-    fclose(fmask);
+    fclose(fmasque);
 }

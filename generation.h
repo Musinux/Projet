@@ -5,6 +5,6 @@
 void calcIndice(int*,int**,int*,int*,int,int);
 void genGrille(int**);
 void choixGrille(int**,int);
-void mask(int**,int);
+void choixMasque(int**,int);
 
 #endif // GENERATION_H__

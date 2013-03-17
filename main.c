@@ -19,14 +19,14 @@ int** creeTab(){
     return tab;
 }
 
-void initTabU(int **tabU,int **tab, int **mask){
+void initgrille_jeu(int **grille_jeu,int **tab, int **masque){
     int i,j;
     for(i=0;i<TAI;i++){
         for(j=0;j<TAI;j++){
-            if(mask[i][j]==0)
-                tabU[i][j]=tab[i][j];
+            if(masque[i][j]==0)
+                grille_jeu[i][j]=tab[i][j];
             else
-                tabU[i][j]=2;
+                grille_jeu[i][j]=2;
         }
     }
 }
@@ -46,11 +46,11 @@ int main()
     srand((unsigned)time(NULL));
     int **tab,alea;
     int **masque;
-    int **tabU;
+    int **grille_jeu;
     int i,j=1;
     alea = rand()%4;
     tab = creeTab();
-    tabU = creeTab();
+    grille_jeu = creeTab();
 
     masque = creeTab();
 
@@ -58,21 +58,21 @@ int main()
 
     choixGrille(tab,alea);
 
-    mask(masque, alea);
+    choixMasque(masque, alea);
 
-    initTabU(tabU,tab,masque);
+    initgrille_jeu(grille_jeu,tab,masque);
 
 
     printf("\n\n");
-    affJoueur(tabU);
+    affJoueur(grille_jeu);
 
 
-    deplJoueur(tabU, masque);
+    deplJoueur(grille_jeu, masque);
 
     printf("\n");
 
     supprTab(tab);
     supprTab(masque);
-    supprTab(tabU);
+    supprTab(grille_jeu);
     return 0;
 }
