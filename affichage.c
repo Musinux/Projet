@@ -18,7 +18,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c)
         {
             if(i==c->x && j==c->y){
                 if(c->etat==CORRECT)
-                    textcolor(GREEN);
+                    textcolor(LIGHTCYAN);
                 else if(c->etat==INCORRECT)
                     textcolor(LIGHTRED);
             }
