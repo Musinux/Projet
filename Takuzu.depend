@@ -1,0 +1,81 @@
+# depslib dependency file v1.0
+1363530596 source:c:\users\louis\documents\takuzu\affichage.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"generation.h"
+	"affichage.h"
+
+1363528454 c:\users\louis\documents\takuzu\generation.h
+
+1363530320 c:\users\louis\documents\takuzu\affichage.h
+
+1363526406 source:c:\users\louis\documents\takuzu\conio.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<windows.h>
+	<string.h>
+	"conio.h"
+
+1363526406 c:\users\louis\documents\takuzu\conio.h
+	<stdio.h>
+
+1363528275 source:c:\users\louis\documents\takuzu\generation.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"affichage.h"
+	"generation.h"
+
+1363530424 source:c:\users\louis\documents\takuzu\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"affichage.h"
+	"generation.h"
+
+1363526406 source:c:\users\louis\dropbox\p1s2 programmation\projet\conio.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<windows.h>
+	<string.h>
+	"conio.h"
+
+1363526406 c:\users\louis\dropbox\p1s2 programmation\projet\conio.h
+	<stdio.h>
+
+1363528275 source:c:\users\louis\dropbox\p1s2 programmation\projet\generation.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"affichage.h"
+	"generation.h"
+
+1363530320 c:\users\louis\dropbox\p1s2 programmation\projet\affichage.h
+
+1363528454 c:\users\louis\dropbox\p1s2 programmation\projet\generation.h
+
+1363532837 source:c:\users\louis\dropbox\p1s2 programmation\projet\affichage.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"generation.h"
+	"affichage.h"
+
+1363531758 source:c:\users\louis\dropbox\p1s2 programmation\projet\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"affichage.h"
+	"generation.h"
+

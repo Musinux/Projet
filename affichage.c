@@ -7,21 +7,6 @@
 #define TAI 8
 
 //#define DEBUG 8
-
-
-void affJeu(int **tab)
-{
-    int i,j;
-    for(i=0;i<TAI;i++)
-    {
-        for(j=0;j<TAI;j++)
-        {
-            printf("%d ",tab[i][j]);
-        }
-        printf("\n");
-    }
-}
-
 void affJoueur(int **tabU)
 {
     int i,j;
