@@ -10,6 +10,7 @@
 
 void affJeu(int **tab)
 {
+    clrscr();
     int i,j;
     printf("\n\n");
     for(i=0;i<TAI;i++)
@@ -21,42 +22,6 @@ void affJeu(int **tab)
         }
         printf("\n\n");
     }
-}
-
-void deplJoueur(int **tab)
-{
-    char c,y=3,x=1;
-    gotoxy(x,y);
-    c=getch();
-    while(c!=' ')
-    {
-        if((c=='q' || c=='Q' ) && x>1){ // vers la gauche
-            x-=2;
-        }
-        else if((c=='d' || c=='D') && x<16){ // vers la droite
-            x+=2;
-        }
-        else if((c=='z'||c=='Z') && y>3){ // vers le haut
-            y-=2;
-        }
-        else if((c=='s'||c=='S') && y<18){ //vers le bas
-            y+=2;
-        }
-
-        gotoxy(x,y);
-        c=getch();
-    }
-    while(c!='0' && c!='1'){
-        c=0;
-        gotoxy(1,1);
-        affJeu(tab);
-        gotoxy(x,y);
-        c=getchar();
-        gotoxy(20,20);
-        printf("cool %c",c);
-
-    }
-    tab[(x-1)/2][(y-3)/2]=c-48;
 }
 
 void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
@@ -478,11 +443,10 @@ void mask(int **mask, int alea)
 
 void affJoueur(int **tab, int **mask)
 {
+    clrscr();
     int i,j;
-    printf("\n\n");
     for(i=0;i<TAI;i++)
     {
-        printf("\n");
         for(j=0;j<TAI;j++)
         {
             if(mask[i][j]==0)
@@ -490,7 +454,44 @@ void affJoueur(int **tab, int **mask)
             else
                 printf("# ");
         }
+        printf("\n");
     }
+}
+
+void deplJoueur(int **tab, int **masque)
+{
+    char c,y=1,x=1;
+    gotoxy(x,y);
+    c=getch();
+    while(c!=' ')
+    {
+        if((c=='q' || c=='Q' ) && x>0){ // vers la gauche
+            x-=1;
+        }
+        else if((c=='d' || c=='D') && x<15){ // vers la droite
+            x+=1;
+        }
+        else if((c=='z'||c=='Z') && y>1){ // vers le haut
+            y-=1;
+        }
+        else if((c=='s'||c=='S') && y<8){ //vers le bas
+            y+=1;
+        }
+
+        gotoxy(x,y);
+        c=getch();
+    }
+    while(c!='0' && c!='1'){
+        c=0;
+        gotoxy(1,1);
+        affJoueur(tab, masque);
+        gotoxy(x,y);
+        c=getchar();
+        gotoxy(20,20);
+        printf("cool %c",c);
+
+    }
+    tab[(x-1)/2][(y-3)/2]=c-48;
 }
 
 int main()
@@ -510,8 +511,8 @@ int main()
     mask(masque, alea);
 
     affJoueur(tab, masque);
-    //deplJoueur(tab);
-    //affJeu(tab);
+    deplJoueur(tab, masque);
+    affJoueur(tab, masque);
     //printf("\n\n%d",verifGrille(tab));
 
     printf("\n");
