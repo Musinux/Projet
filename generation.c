@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include "conio.h"
 #include "affichage.h"
 #include "generation.h"
 
-void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
+void calcIndice(int *l,int **solution, int *i,int *m,int k,int type){
 
     // et si deux fois de suite on regénère la même ligne, on repart de la ligne précédente, et ainsi de suite
     int o,p;
@@ -29,7 +30,7 @@ void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
         l[p]=0;
     for(o=0;o<=*i;o++){
         for(p=0;p<TAI;p++)
-            l[p]=tab[o][p]?l[p]+1:l[p]-1;
+            l[p]=solution[o][p]?l[p]+1:l[p]-1;
     }
 
 
@@ -37,7 +38,7 @@ void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
     printf("---\n");
     #endif
     /*
-    printf("%d %d %d %d %d %d %d %d | %d\n",tab[*i][0],tab[*i][1],tab[*i][2],tab[*i][3],tab[*i][4],tab[*i][5],tab[*i][6],tab[*i][7],k);
+    printf("%d %d %d %d %d %d %d %d | %d\n",solution[*i][0],solution[*i][1],solution[*i][2],solution[*i][3],solution[*i][4],solution[*i][5],solution[*i][6],solution[*i][7],k);
     for(o=0;o<TAI;o++){
         if(l[o]>=0)
             printf(" %d ",l[o]);
@@ -50,7 +51,7 @@ void calcIndice(int *l,int **tab, int *i,int *m,int k,int type){
 }
 
 
-void genGrille(int **tab)
+void genGrille(int **solution)
 {
     srand((unsigned)time(NULL));
     #ifdef DEBUG
@@ -79,40 +80,40 @@ void genGrille(int **tab)
                 #endif
             }
             // dans le cas où en ligne et en colonne on a deux chiffres identiques qui se succèdent
-            if((j>=2 && tab[i][j-1]==tab[i][j-2]) && (i>=2 && tab[i-1][j]==tab[i-2][j])){
+            if((j>=2 && solution[i][j-1]==solution[i][j-2]) && (i>=2 && solution[i-1][j]==solution[i-2][j])){
                 // si ce sont les mêmes chiffres, la nouvelle case aura l'inverse
-                if(tab[i][j-1]==tab[i-1][j]){
-                    tab[i][j]= tab[i-1][j]?0:1;
+                if(solution[i][j-1]==solution[i-1][j]){
+                    solution[i][j]= solution[i-1][j]?0:1;
                     #ifdef DEBUG
                     debug_ligne[cpt_debug]='.';
                     cpt_debug+=1;
                     #endif
                 }
                 else{ // sinon, on recommence la génération de la ligne, vu que c'est un cas impossible à gérer
-                    calcIndice(l,tab,&i,&m,k,0);
+                    calcIndice(l,solution,&i,&m,k,0);
                     break;
                 }
             }
-            else if(j>=2 && tab[i][j-1]==tab[i][j-2]){ // si juste la ligne a deux chiffres identiques
-                if(((l[j]==1 || k==2) && tab[i][j-1]==0) || ((l[j]==-1 || k==-2) && tab[i][j-1]==1)){
-                    calcIndice(l,tab,&i,&m,k,5);
+            else if(j>=2 && solution[i][j-1]==solution[i][j-2]){ // si juste la ligne a deux chiffres identiques
+                if(((l[j]==1 || k==2) && solution[i][j-1]==0) || ((l[j]==-1 || k==-2) && solution[i][j-1]==1)){
+                    calcIndice(l,solution,&i,&m,k,5);
                     break;
                 }
                 else{
-                    tab[i][j]= tab[i][j-1]?0:1;
+                    solution[i][j]= solution[i][j-1]?0:1;
                     #ifdef DEBUG
                     debug_ligne[cpt_debug]=',';
                     cpt_debug+=1;
                     #endif
                 }
             }
-            else if(i>=2 && tab[i-1][j]==tab[i-2][j]){ // si juste la colonne a deux chiffres identiques
-                if(((l[j]==2 || k==1) && tab[i-1][j]==0) || ((l[j]==-2 || k==-1) && tab[i-1][j]==1)){
-                    calcIndice(l,tab,&i,&m,k,6);
+            else if(i>=2 && solution[i-1][j]==solution[i-2][j]){ // si juste la colonne a deux chiffres identiques
+                if(((l[j]==2 || k==1) && solution[i-1][j]==0) || ((l[j]==-2 || k==-1) && solution[i-1][j]==1)){
+                    calcIndice(l,solution,&i,&m,k,6);
                     break;
                 }
                 else{
-                    tab[i][j]= tab[i-1][j]?0:1;
+                    solution[i][j]= solution[i-1][j]?0:1;
                     #ifdef DEBUG
                     debug_ligne[cpt_debug]='?';
                     cpt_debug+=1;
@@ -121,12 +122,12 @@ void genGrille(int **tab)
             }
             else if((k==2 && l[j]==-2)||(k==-2 && l[j]==2))  { // si on se retrouve avec des valeurs inverses pour k et l[]
                 // pas d'autre solution que de regénérer la ligne, avec les mêmes conditions que pour précédement
-                calcIndice(l,tab,&i,&m,k,1);
+                calcIndice(l,solution,&i,&m,k,1);
                 break;
             }
             else if(k==2 || l[j]==2) { // cas où on a trop de 1
                 if((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
-                    tab[i][j]=0;
+                    solution[i][j]=0;
                     #ifdef DEBUG
                     debug_ligne[cpt_debug]=';';
                     cpt_debug+=1;
@@ -136,39 +137,39 @@ void genGrille(int **tab)
                     // lorsqu'on est arrivé à la dernière ligne ou dernière colonne
                     // il n'y a forcément qu'une solution possible pour cette ligne.
                     // si k ou l[] == 2 dans cette situation, la seule solution est de regénérer la grille
-                    calcIndice(l,tab,&i,&m,k,2);
+                    calcIndice(l,solution,&i,&m,k,2);
                     break;
                 }
             }
             else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
                 if((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))){
-                    tab[i][j]=1;
+                    solution[i][j]=1;
                     #ifdef DEBUG
                     debug_ligne[cpt_debug]=':';
                     cpt_debug+=1;
                     #endif
                 }
                 else{
-                    calcIndice(l,tab,&i,&m,k,3);
+                    calcIndice(l,solution,&i,&m,k,3);
                     break;
                 }
             }
             else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
                 if((j==TAI-1 && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
                     // un 0 pour la colonne, on est coincé, on regénère la ligne.
-                    calcIndice(l,tab,&i,&m,k,4);
+                    calcIndice(l,solution,&i,&m,k,4);
                     break;
                 }
                 else if(j==TAI-1){ // si on n'est qu'à la fin d'une ligne
                     if(k==-1){ // s'il faut un 1
-                        tab[i][j]=1;
+                        solution[i][j]=1;
                         #ifdef DEBUG
                         debug_ligne[cpt_debug]='/';
                         cpt_debug+=1;
                         #endif
                     }
                     else if(k==1){ // s'il faut un 0
-                        tab[i][j]=0;
+                        solution[i][j]=0;
                         #ifdef DEBUG
                         debug_ligne[cpt_debug]='!';
                         cpt_debug+=1;
@@ -177,14 +178,14 @@ void genGrille(int **tab)
                 }
                 else if(i==TAI-1){ // si on n'est qu'à la fin d'une colonne
                     if(l[j]==-1){ // s'il faut un 1
-                        tab[i][j]=1;
+                        solution[i][j]=1;
                         #ifdef DEBUG
                         debug_ligne[cpt_debug]='*';
                         cpt_debug+=1;
                         #endif
                     }
                     else if(l[j]==1){ // s'il faut un 0
-                        tab[i][j]=0;
+                        solution[i][j]=0;
                         #ifdef DEBUG
                         debug_ligne[cpt_debug]='`';
                         cpt_debug+=1;
@@ -193,16 +194,16 @@ void genGrille(int **tab)
                 }
             }
             else{  // si aucune des conditions précédentes n'est rencontrées, on génère un nombre aléatoire
-                tab[i][j]=rand()%2;
+                solution[i][j]=rand()%2;
                 #ifdef DEBUG
                 debug_ligne[cpt_debug]='&';
                 cpt_debug+=1;
                 #endif
             }
-            k=tab[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
-            l[j]=tab[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
+            k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
+            l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
             #ifdef DEBUG
-            debug_ligne[cpt_debug]=tab[i][j]+48;
+            debug_ligne[cpt_debug]=solution[i][j]+48;
             cpt_debug+=1;
             debug_ligne[cpt_debug]=' ';
             cpt_debug+=1;
@@ -219,12 +220,12 @@ void genGrille(int **tab)
                     cpt_simili=0;
                     for(o=0;o<TAI;o++) // lignes
                     {
-                        if(i>0  && tab[i][o] == tab[n][o]){
+                        if(i>0  && solution[i][o] == solution[n][o]){
                             cpt_simili+=1;
                         }
                     }
                     if(cpt_simili==8){
-                        calcIndice(l,tab,&i,&m,k,7);
+                        calcIndice(l,solution,&i,&m,k,7);
                         n=i+1;
                     }
                 }
@@ -244,7 +245,7 @@ void genGrille(int **tab)
                 }
                 printf("\n");
 
-                printf("%d %d %d %d %d %d %d %d | %d\n",tab[i][0],tab[i][1],tab[i][2],tab[i][3],tab[i][4],tab[i][5],tab[i][6],tab[i][7],k);
+                printf("%d %d %d %d %d %d %d %d | %d\n",solution[i][0],solution[i][1],solution[i][2],solution[i][3],solution[i][4],solution[i][5],solution[i][6],solution[i][7],k);
                 #endif
                 if(i==TAI-1){
                     // n,o,p
@@ -253,12 +254,12 @@ void genGrille(int **tab)
                     {
                         for(o=0;o<TAI;o++) // lignes
                         {
-                            if(i>0  && tab[o][j] == tab[o][n]){
+                            if(i>0  && solution[o][j] == solution[o][n]){
                                 cpt_simili+=1;
                             }
                         }
                         if(cpt_simili==8){
-                            calcIndice(l,tab,&i,&m,k,8);
+                            calcIndice(l,solution,&i,&m,k,8);
                             n=j+1;
                         }
                     }
@@ -304,17 +305,29 @@ void choixGrille(int **grille,int alea){
     fclose(fgrille);
 }
 
-int verifGrille(int **tab){
+void initgrille_jeu(int **grille_jeu,int **solution, int **masque){
+    int i,j;
+    for(i=0;i<TAI;i++){
+        for(j=0;j<TAI;j++){
+            if(masque[i][j]==0)
+                grille_jeu[i][j]=solution[i][j];
+            else
+                grille_jeu[i][j]=2;
+        }
+    }
+}
+
+int verifGrille(int **solution){
     int i,j,cpt=0,k,l[TAI]={0},cpt_simili_col[TAI]={0},cpt_simili_lig=0;
 /*
     for(i=0;i<TAI;i++){
         cpt_simili_lig=0;
         for(j=0;j<TAI;j++){
-            if((j!=0) && (tab[i][j]!=tab[i][j-1])){
+            if((j!=0) && (solution[i][j]!=solution[i][j-1])){
                 cpt_simili_lig+=1;
             }
             if(i!=0){
-                if(tab[i][j]==tab[i-1][j])
+                if(solution[i][j]==solution[i-1][j])
                     cpt_simili_col[j]+=1;
                 if(cpt_simili_col[j]==8){
                     return -300;
@@ -328,7 +341,7 @@ int verifGrille(int **tab){
 
     for(i=0;i<TAI;i++) {
         for(j=0;j<TAI;j++) {
-            cpt = tab[i][j]?cpt+1:cpt-1;
+            cpt = solution[i][j]?cpt+1:cpt-1;
         }
     }
     if(cpt!=0)
@@ -340,20 +353,20 @@ int verifGrille(int **tab){
                     k=0;
 
                 // dans le cas où en ligne et en colonne on a deux chiffres identiques qui se succèdent
-                if((j>=2 && tab[i][j-1]==tab[i][j-2]) && (i>=2 && tab[i-1][j]==tab[i-2][j])){
+                if((j>=2 && solution[i][j-1]==solution[i][j-2]) && (i>=2 && solution[i-1][j]==solution[i-2][j])){
                     // si ce sont les mêmes chiffres, la nouvelle case aura l'inverse
-                    if(tab[i][j-1]!=tab[i-1][j]){
+                    if(solution[i][j-1]!=solution[i-1][j]){
                         return -90;
                     }
                 }
-                else if(j>=2 && tab[i][j-1]==tab[i][j-2]){ // si juste la colonne a deux chiffres identiques
-                    if((k==1 && tab[i][j-1]==0) || (k==-1 && tab[i][j-1]==1) || (tab[i][j]==tab[i][j-1])){
+                else if(j>=2 && solution[i][j-1]==solution[i][j-2]){ // si juste la colonne a deux chiffres identiques
+                    if((k==1 && solution[i][j-1]==0) || (k==-1 && solution[i][j-1]==1) || (solution[i][j]==solution[i][j-1])){
 
                         return -80;
                     }
                 }
-                else if(i>=2 && tab[i-1][j]==tab[i-2][j]){ // si juste la ligne a deux chiffres identiques
-                    if((l[j]==1 && tab[i-1][j]==0) || (l[j]==-1 && tab[i-1][j]==1) || (tab[i][j]==tab[i-1][j])){
+                else if(i>=2 && solution[i-1][j]==solution[i-2][j]){ // si juste la ligne a deux chiffres identiques
+                    if((l[j]==1 && solution[i-1][j]==0) || (l[j]==-1 && solution[i-1][j]==1) || (solution[i][j]==solution[i-1][j])){
                         return -70;
                     }
                 }
@@ -361,23 +374,23 @@ int verifGrille(int **tab){
                     return -60;
                 }
                 else if(k==2 || l[j]==2) { // cas où on a trop de 1
-                    if(((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))) && tab[i][j]!=0){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
+                    if(((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))) && solution[i][j]!=0){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
                         return -50;
                     }
                 }
                 else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
-                    if(((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))) && tab[i][j]!=1){
-                        printf("\n\ni:%d   \nj:%d   \ntab[%d][%d]:%d   \ntab[%d][%d]:%d  \ntab[%d][%d]:%d  \nk:%d  \nl[%d]:%d",i,j,i,j,tab[i][j],i,j-1,tab[i][j-1],i,j-2,tab[i][j-2],k,j,l[j]);
+                    if(((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))) && solution[i][j]!=1){
+                        printf("\n\ni:%d   \nj:%d   \nsolution[%d][%d]:%d   \nsolution[%d][%d]:%d  \nsolution[%d][%d]:%d  \nk:%d  \nl[%d]:%d",i,j,i,j,solution[i][j],i,j-1,solution[i][j-1],i,j-2,solution[i][j-2],k,j,l[j]);
                         return -40;
                     }
                 }
                 else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
-                    if(((j==i && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))) || (j==TAI-1 && ((k==-1 && tab[i][j]==0)|| (k==1 && tab[i][j]==1))) || (i==TAI-1 && ((l[j]==-1 && tab[i][j]==0)|| (l[j]==1 && tab[i][j]==1))) ){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
+                    if(((j==i && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))) || (j==TAI-1 && ((k==-1 && solution[i][j]==0)|| (k==1 && solution[i][j]==1))) || (i==TAI-1 && ((l[j]==-1 && solution[i][j]==0)|| (l[j]==1 && solution[i][j]==1))) ){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
                         return -30;
                     }
                 }
-                k=tab[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
-                l[j]=tab[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
+                k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
+                l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
             }
         }
     }
@@ -402,4 +415,32 @@ void choixMasque(int **masque, int alea)
         }
     }
     fclose(fmasque);
+}
+
+
+void estValide(int **grille_jeu,coords *c){
+    int i,j,cpt=0;
+    for(i=0;i<TAI;i++){
+        if(grille_jeu[c->x][i]!=2)
+            cpt = grille_jeu[c->x][i]?cpt+1:cpt-1;
+    }
+    if(cpt>(TAI/2) || (-cpt)>(TAI/2))
+        c->etat=INCORRECT;
+    else{
+        cpt=0;
+        for(i=0;i<TAI;i++){
+            if(grille_jeu[i][c->y]!=2)
+                cpt = grille_jeu[i][c->y]?cpt+1:cpt-1;
+        }
+        if(cpt>(TAI/2) || (-cpt)>(TAI/2)){
+            gotoxy(20,19);
+            printf("coup incorrect, cpt=%d",cpt);
+            c->etat=INCORRECT;
+        }
+        else{
+            gotoxy(20,18);
+            printf("coup correct, cpt=%d",cpt);
+            c->etat=CORRECT;
+        }
+    }
 }

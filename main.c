@@ -19,18 +19,6 @@ int** creeTab(){
     return tab;
 }
 
-void initgrille_jeu(int **grille_jeu,int **tab, int **masque){
-    int i,j;
-    for(i=0;i<TAI;i++){
-        for(j=0;j<TAI;j++){
-            if(masque[i][j]==0)
-                grille_jeu[i][j]=tab[i][j];
-            else
-                grille_jeu[i][j]=2;
-        }
-    }
-}
-
 void supprTab(int **tab){
     int i;
     for(i=0;i<TAI;i++){
@@ -44,34 +32,40 @@ void supprTab(int **tab){
 int main()
 {
     srand((unsigned)time(NULL));
-    int **tab,alea;
+    int **solution,alea;
     int **masque;
+    coords c;
     int **grille_jeu;
-    int i,j=1;
+    int i,j=1,fin=0;
+
+    c.x=0;
+    c.y=0;
+    c.etat=VALIDE;
+
     alea = rand()%4;
-    tab = creeTab();
+    solution = creeTab();
     grille_jeu = creeTab();
 
     masque = creeTab();
 
     //printf("%d",alea);
 
-    choixGrille(tab,alea);
+    choixGrille(solution,alea);
 
     choixMasque(masque, alea);
 
-    initgrille_jeu(grille_jeu,tab,masque);
-
-
-    printf("\n\n");
-    affJoueur(grille_jeu);
-
-
-    deplJoueur(grille_jeu, masque);
+    initgrille_jeu(grille_jeu,solution,masque);
+    while(fin==0){
+        clrscr();
+        printf("\n\n");
+        affJoueur(grille_jeu, masque, &c);
+        deplJoueur(grille_jeu, masque, &c);
+        estValide(grille_jeu, &c);
+    }
 
     printf("\n");
 
-    supprTab(tab);
+    supprTab(solution);
     supprTab(masque);
     supprTab(grille_jeu);
     return 0;

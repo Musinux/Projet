@@ -1,8 +1,21 @@
 #ifndef AFFICHAGE_H__
 #define AFFICACHE_H__
 
-void affJeu(int**);
-void deplJoueur(int**,int**);
-void affJoueur(int**);
+typedef enum e_etat{
+VALIDE,
+CORRECT,
+INCORRECT
+}e_etat;
+
+typedef struct coords{
+    int x;
+    int y;
+    e_etat etat;
+}coords;
+
+
+
+void deplJoueur(int**,int**,coords*);
+void affJoueur(int**,int**,coords*);
 
 #endif // AFFICHAGE_H__
