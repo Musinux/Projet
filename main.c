@@ -56,8 +56,8 @@ int main()
 
     initgrille_jeu(grille_jeu,solution,masque);
     while(fin==0){
-        clrscr();
-        printf("\n\n");
+        //clrscr();
+        gotoxy(1,3);
         affJoueur(grille_jeu, masque, &c);
         deplJoueur(grille_jeu, masque, &c);
         estValide(grille_jeu, &c);

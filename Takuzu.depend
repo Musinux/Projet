@@ -63,7 +63,7 @@
 
 1363540284 c:\users\louis\dropbox\p1s2 programmation\projet\generation.h
 
-1363544916 source:c:\users\louis\dropbox\p1s2 programmation\projet\affichage.c
+1363546343 source:c:\users\louis\dropbox\p1s2 programmation\projet\affichage.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -72,7 +72,7 @@
 	"generation.h"
 	"affichage.h"
 
-1363544043 source:c:\users\louis\dropbox\p1s2 programmation\projet\main.c
+1363546266 source:c:\users\louis\dropbox\p1s2 programmation\projet\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>

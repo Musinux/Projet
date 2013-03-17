@@ -77,9 +77,6 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co)
         affJoueur(grille_jeu, masque, co);
         gotoxy(x,y);
         c=getchar();
-        gotoxy(20,20);
-        printf("cool %c",c);
-
     }
     grille_jeu[co->x][co->y]=c-48;
 }

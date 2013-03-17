@@ -2,7 +2,6 @@ Ce fichier texte permet de suivre l'évolution du projet ainsi que toutes les t�
 
 
 Les fonctions à créer:
-  - Un masque pour afficher le jeu
   - Affichage de la solution
   - Détermination si la case donné par le joeur est correct
 
@@ -12,3 +11,4 @@ Les fonctions qui sont en place:
   - L'affichage complet de la grille
   - Le stockage de la grille dans un fichier
   - La génération d'une grille
+  - Le masque
