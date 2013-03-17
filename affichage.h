@@ -4,7 +4,8 @@
 typedef enum e_etat{
 VALIDE,
 CORRECT,
-INCORRECT
+INCORRECT,
+VIDE
 }e_etat;
 
 typedef struct coords{

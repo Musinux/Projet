@@ -71,12 +71,18 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co)
         gotoxy(x,y);
         c=getch();
     }
-    while(c!='0' && c!='1'){
+    c=0;
+    while(c!='0' && c!='1' && c!=' '){
         c=0;
         gotoxy(1,3);
         affJoueur(grille_jeu, masque, co);
         gotoxy(x,y);
         c=getchar();
     }
-    grille_jeu[co->x][co->y]=c-48;
+    if(c!=' ')
+        grille_jeu[co->x][co->y]=c-48;
+    else{
+        grille_jeu[co->x][co->y]=2;
+        co->etat=VIDE;
+    }
 }

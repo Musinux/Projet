@@ -27,6 +27,11 @@ void supprTab(int **tab){
     free(tab);
 }
 
+void initCoords(coords*c){
+    c->x=0;
+    c->y=0;
+    c->etat=VIDE;
+}
 
 
 int main()
@@ -38,15 +43,22 @@ int main()
     int **grille_jeu;
     int i,j=1,fin=0;
 
-    c.x=0;
-    c.y=0;
-    c.etat=VALIDE;
-
+    initCoords(&c);
     alea = rand()%4;
     solution = creeTab();
     grille_jeu = creeTab();
 
     masque = creeTab();
+
+    gotoxy(20,5);
+    printf("Bienvenue au Takuzu!");
+    gotoxy(20,6);
+    printf("1- Naviguez avec z,q,s,d");
+    gotoxy(20,7);
+    printf("2- Selectionnez la case a modifier avec 'Espace'");
+    gotoxy(20,8);
+    printf("3- Entrez votre choix 0/1/Espace pour effacer une case");
+    gotoxy("4- ");
 
     //printf("%d",alea);
 

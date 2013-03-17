@@ -420,28 +420,12 @@ void choixMasque(int **masque, int alea)
 
 void estValide(int **grille_jeu,coords *c){
     int i,cpt0=0,cpt1=0;
-    for(i=0;i<TAI;i++){
-        if(grille_jeu[c->x][i]!=2){
-            if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
-                    cpt1=TAI;
-            if(grille_jeu[c->x][i])
-                cpt1+=1;
-            else
-                cpt0+=1;
-        }
-    }
-    if(cpt0>(TAI/2) || cpt1>(TAI/2)){
-        gotoxy(20,18);
-        printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
-        c->etat=INCORRECT;
-    }
-    else{
-        cpt0=cpt1=0;
+    if(c->etat!=VIDE){
         for(i=0;i<TAI;i++){
-            if(grille_jeu[i][c->y]!=2){
-                if(i>0 && i<TAI-1 && grille_jeu[i-1][c->y]==grille_jeu[i][c->y] && grille_jeu[i+1][c->y]==grille_jeu[i][c->y])
-                    cpt1=TAI;
-                else if(grille_jeu[i][c->y])
+            if(grille_jeu[c->x][i]!=2){
+                if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
+                        cpt1=TAI;
+                if(grille_jeu[c->x][i])
                     cpt1+=1;
                 else
                     cpt0+=1;
@@ -453,9 +437,27 @@ void estValide(int **grille_jeu,coords *c){
             c->etat=INCORRECT;
         }
         else{
-            gotoxy(20,18);
-            printf("coup correct, cpt=%d,%d",cpt0,cpt1);
-            c->etat=CORRECT;
+            cpt0=cpt1=0;
+            for(i=0;i<TAI;i++){
+                if(grille_jeu[i][c->y]!=2){
+                    if(i>0 && i<TAI-1 && grille_jeu[i-1][c->y]==grille_jeu[i][c->y] && grille_jeu[i+1][c->y]==grille_jeu[i][c->y])
+                        cpt1=TAI;
+                    else if(grille_jeu[i][c->y])
+                        cpt1+=1;
+                    else
+                        cpt0+=1;
+                }
+            }
+            if(cpt0>(TAI/2) || cpt1>(TAI/2)){
+                gotoxy(20,18);
+                printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
+                c->etat=INCORRECT;
+            }
+            else{
+                gotoxy(20,18);
+                printf("coup correct, cpt=%d,%d",cpt0,cpt1);
+                c->etat=CORRECT;
+            }
         }
     }
 
