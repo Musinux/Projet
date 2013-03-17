@@ -58,7 +58,6 @@ int main()
     printf("2- Selectionnez la case a modifier avec 'Espace'");
     gotoxy(20,8);
     printf("3- Entrez votre choix 0/1/Espace pour effacer une case");
-    gotoxy("4- ");
 
     //printf("%d",alea);
 

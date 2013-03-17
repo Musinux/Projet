@@ -79,8 +79,10 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co)
         gotoxy(x,y);
         c=getchar();
     }
-    if(c!=' ')
+    if(c!=' '){
         grille_jeu[co->x][co->y]=c-48;
+        co->etat=INCORRECT;
+    }
     else{
         grille_jeu[co->x][co->y]=2;
         co->etat=VIDE;
