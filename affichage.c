@@ -8,15 +8,29 @@
 #define TAI 8
 //#define DEBUG 8
 
+void initCoords(coords*c,coords*prec){
+    c->x=0;
+    c->y=0;
+    c->etat=VIDE;
+    if(prec!=NULL)
+        c->prec=prec;
+    else
+        c->prec=NULL;
+
+}
+
 void affJoueur(int **grille_jeu, int **masque, coords* c)
 {
     int i,j;
+    int **tab;
+    tab = creeTab();
+
     //clrscr();
     for(i=0;i<TAI;i++)
     {
         for(j=0;j<TAI;j++)
         {
-            if(i==c->x && j==c->y){
+            if(i==c->x && j==c->y && masque[i][j]!=0){
                 if(c->etat==CORRECT)
                     textcolor(LIGHTCYAN);
                 else if(c->etat==INCORRECT)
