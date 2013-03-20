@@ -13,11 +13,12 @@ int main()
     srand((unsigned)time(NULL));
     int **solution,alea;
     int **masque;
-    coords c;
+    coords *c;
+    c = (coords*) malloc(sizeof(coords));
     int **grille_jeu;
-    int i,j=1,fin=0;
+    int i,fin=0;
 
-    initCoords(&c,NULL);
+    initCoords(c,NULL,NULL);
     alea = rand()%4;
     solution = creeTab();
     grille_jeu = creeTab();
@@ -35,6 +36,10 @@ int main()
 
     //printf("%d",alea);
 
+    /*for(i=0;i<1;i++){
+        genGrille(solution);
+    }*/
+
     choixGrille(solution,alea);
 
     choixMasque(masque, alea);
@@ -43,9 +48,11 @@ int main()
     while(fin==0){
         //clrscr();
         gotoxy(1,3);
-        affJoueur(grille_jeu, masque, &c);
-        deplJoueur(grille_jeu, masque, &c);
-        estValide(grille_jeu, &c);
+        affJoueur(grille_jeu, masque, c);
+        deplJoueur(grille_jeu, masque, c);
+        checkErreurs(grille_jeu, c);
+        c= estValide(grille_jeu, c);
+
     }
 
     printf("\n");
