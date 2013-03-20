@@ -8,7 +8,7 @@
 #define TAI 8
 //#define DEBUG 8
 
-void initCoords(coords*c,coords*prec){
+void initCoords(coords*c,coords*prec,coords*suiv){
     c->x=0;
     c->y=0;
     c->etat=VIDE;
@@ -17,23 +17,49 @@ void initCoords(coords*c,coords*prec){
     else
         c->prec=NULL;
 
+    if(suiv!=NULL)
+        c->suiv=suiv;
+    else
+        c->suiv=NULL;
 }
 
 void affJoueur(int **grille_jeu, int **masque, coords* c)
 {
     int i,j;
-    int **tab;
-    tab = creeTab();
+    int **errors;
+    errors = creeTab();
+    errors[c->x][c->y]=c->etat;
+
+    while(c->prec!=NULL){
+        c=c->prec;
+        switch(c->etat){
+            case VALIDE:
+                errors[c->x][c->y]=VALIDE;
+                break;
+            case CORRECT:
+                errors[c->x][c->y]=CORRECT;
+                break;
+            case INCORRECT:
+                errors[c->x][c->y]=INCORRECT;
+                break;
+            default:
+                errors[c->x][c->y]=0;
+        }
+        //gotoxy(20,10);
+        //printf("c:\nx=%d\ny=%d\netat=%d\nprec=%d\nsuiv=%d\nerrors[]=%d",c->x,c->y,c->etat,c->prec,c->suiv,errors[c->x][c->y]);
+    }
 
     //clrscr();
     for(i=0;i<TAI;i++)
     {
         for(j=0;j<TAI;j++)
         {
-            if(i==c->x && j==c->y && masque[i][j]!=0){
-                if(c->etat==CORRECT)
+            if(errors[i][j]!=0 && masque[i][j]!=0){
+                if(errors[i][j]==CORRECT)
                     textcolor(LIGHTCYAN);
-                else if(c->etat==INCORRECT)
+                else if(errors[i][j]==VALIDE)
+                    textcolor(LIGHTMAGENTA);
+                else if(errors[i][j]==INCORRECT)
                     textcolor(LIGHTRED);
             }
             else if(masque[i][j]==0)
@@ -102,3 +128,4 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co)
         co->etat=VIDE;
     }
 }
+
