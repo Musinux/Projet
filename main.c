@@ -8,32 +8,6 @@
 #define TAI 8
 //#define DEBUG 8
 
-
-int** creeTab(){
-    int **tab,i;
-    tab =(int*) malloc(TAI*sizeof(int*));
-
-    for(i=0;i<TAI;i++){
-        tab[i] = malloc(TAI*sizeof(int));
-    }
-    return tab;
-}
-
-void supprTab(int **tab){
-    int i;
-    for(i=0;i<TAI;i++){
-        free(tab[i]);
-    }
-    free(tab);
-}
-
-void initCoords(coords*c){
-    c->x=0;
-    c->y=0;
-    c->etat=VIDE;
-}
-
-
 int main()
 {
     srand((unsigned)time(NULL));
@@ -43,7 +17,7 @@ int main()
     int **grille_jeu;
     int i,j=1,fin=0;
 
-    initCoords(&c);
+    initCoords(&c,NULL);
     alea = rand()%4;
     solution = creeTab();
     grille_jeu = creeTab();
