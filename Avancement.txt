@@ -12,3 +12,4 @@ Les fonctions qui sont en place:
   - Le stockage de la grille dans un fichier
   - La génération d'une grille
   - Le masque
+  - Vérification qu'un coup joué est "correct"
