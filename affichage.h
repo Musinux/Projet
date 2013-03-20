@@ -1,5 +1,5 @@
 #ifndef AFFICHAGE_H__
-#define AFFICACHE_H__
+#define AFFICHAGE_H__
 
 typedef enum e_etat{
 VALIDE,
@@ -13,11 +13,12 @@ typedef struct coords{
     int y;
     e_etat etat;
     struct coords* prec;
+    struct coords* suiv;
 }coords;
 
 
 void deplJoueur(int**,int**,coords*);
 void affJoueur(int**,int**,coords*);
-void initCoords(coords*,coords*);
+void initCoords(coords*c,coords*prec,coords*suiv);
 
 #endif // AFFICHAGE_H__
