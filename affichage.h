@@ -2,10 +2,10 @@
 #define AFFICHAGE_H__
 
 typedef enum e_etat{
+VIDE,
 VALIDE,
 CORRECT,
-INCORRECT,
-VIDE
+INCORRECT
 }e_etat;
 
 typedef struct coords{
@@ -17,8 +17,9 @@ typedef struct coords{
 }coords;
 
 
-void deplJoueur(int**,int**,coords*);
+void deplJoueur(int**,int**,int **solution,coords*);
 void affJoueur(int**,int**,coords*);
+void affTab(int**);
 void initCoords(coords*c,coords*prec,coords*suiv);
 
 #endif // AFFICHAGE_H__

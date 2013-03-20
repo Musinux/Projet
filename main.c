@@ -24,7 +24,7 @@ int main()
     grille_jeu = creeTab();
 
     masque = creeTab();
-
+    /*
     gotoxy(20,5);
     printf("Bienvenue au Takuzu!");
     gotoxy(20,6);
@@ -33,26 +33,25 @@ int main()
     printf("2- Selectionnez la case a modifier avec 'Espace'");
     gotoxy(20,8);
     printf("3- Entrez votre choix 0/1/Espace pour effacer une case");
+    gotoxy(20,9);
+    printf("4- Validez avec 'Entree'");
+    */
 
-    //printf("%d",alea);
+    genGrille(solution);
+    genMasque(masque);
+    //printf("\n\n%d",verifGrille(solution));
+    //choixGrille(solution,alea);
 
-    /*for(i=0;i<1;i++){
-        genGrille(solution);
-    }*/
-
-    choixGrille(solution,alea);
-
-    choixMasque(masque, alea);
+    //choixMasque(masque, alea);
 
     initgrille_jeu(grille_jeu,solution,masque);
     while(fin==0){
         //clrscr();
         gotoxy(1,3);
         affJoueur(grille_jeu, masque, c);
-        deplJoueur(grille_jeu, masque, c);
+        deplJoueur(grille_jeu, masque,solution, c);
         checkErreurs(grille_jeu, c);
         c= estValide(grille_jeu, c);
-
     }
 
     printf("\n");

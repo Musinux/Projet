@@ -4,6 +4,7 @@
 #define TAI 8
 void calcIndice(int*,int**,int*,int*,int,int);
 void genGrille(int**);
+void genMasque(int **);
 void choixGrille(int**,int);
 void choixMasque(int**,int);
 void initgrille_jeu(int **,int **, int **);
