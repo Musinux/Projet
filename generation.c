@@ -8,7 +8,7 @@
 
 int** creeTab(){
     int **tab,i,j;
-    tab =(int*) malloc(TAI*sizeof(int*));
+    tab =(int**) malloc(TAI*sizeof(int*));
 
     for(i=0;i<TAI;i++){
         tab[i] = malloc(TAI*sizeof(int));
@@ -46,7 +46,7 @@ void genGrille(int **solution)
 {
     srand((unsigned)time(NULL));
 
-    int i,j,k,l[TAI]={0},m=0,n,o,p,cpt_simili;
+    int i,j,k,l[TAI]={0},m=0,n,o;
 
     // i et j sont des compteurs.
     // k est une variable qui prend +1 lorsqu'on ajoute un 1 à une ligne, et -1 lorsqu'on ajoute un 0.
@@ -163,7 +163,7 @@ void genGrille(int **solution)
                         n=i+1;
                     }
                 }
-                if(n=i+1)
+                if(n==i+1)
                     break;
                 if(i==TAI-1){
                     // n,o,p
@@ -181,7 +181,7 @@ void genGrille(int **solution)
                             n=j+1;
                         }
                     }
-                    if(n=j+1)
+                    if(n==j+1)
                         break;
                     m=0;
                 }
@@ -332,7 +332,7 @@ void choixMasque(int **masque, int alea)
 }
 
 
-void estValide(int **grille_jeu,coords *c){
+coords* estValide(int **grille_jeu,coords *c){
     int i,cpt0=0,cpt1=0;
     if(c->etat!=VIDE){
         for(i=0;i<TAI;i++){
@@ -366,13 +366,38 @@ void estValide(int **grille_jeu,coords *c){
                 gotoxy(20,18);
                 printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
                 c->etat=INCORRECT;
+
             }
             else{
                 gotoxy(20,18);
                 printf("coup correct, cpt=%d,%d",cpt0,cpt1);
                 c->etat=CORRECT;
             }
+            coords *newCoord;
+            newCoord = (coords*) malloc(sizeof(coords));
+            newCoord->x=c->x;
+            newCoord->y=c->y;
+            newCoord->etat=VIDE;
+            newCoord->prec=c;
+            newCoord->suiv=NULL;
+            c->suiv=newCoord;
+            return newCoord;
         }
     }
-
+    return c;
 }
+
+void checkErreurs(int **grille_jeu,coords *c)
+{
+    coords* suiv;
+    gotoxy(20,10);
+    while(c->prec!=NULL){
+        c=c->prec;
+        estValide(grille_jeu, c);
+        if(c->etat==VALIDE || c->etat==VIDE){
+            suiv = c->suiv;
+            suiv->prec = c->prec;
+        }
+    }
+}
+
