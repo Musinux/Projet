@@ -1,25 +1,15 @@
-#ifndef AFFICHAGE_H__
-#define AFFICHAGE_H__
-
-typedef enum e_etat{
-VIDE,
-VALIDE,
-CORRECT,
-INCORRECT
-}e_etat;
-
-typedef struct coords{
-    int x;
-    int y;
-    e_etat etat;
-    struct coords* prec;
-    struct coords* suiv;
-}coords;
-
-
-void deplJoueur(int**,int**,coords*,int**);
-void affJoueur(int**,int**,coords*,int**);
-void affTab(int**);
-void initCoords(coords*c,coords*prec,coords*suiv);
-
-#endif // AFFICHAGE_H__
+#ifndef GENERATION_H__
+#define GENERATION_H__
+#include "affichage.h"
+#define TAI 8
+void calcIndice(int*,int**,int*,int*,int,int);
+void genGrille(int**);
+void genMasque(int **);
+void choixGrille(int**,int);
+void choixMasque(int**,int);
+void initgrille_jeu(int **,int **, int **);
+int** creeTab();
+void supprTab(int **tab);
+coords* estValide(int **,coords *,int**);
+void checkErreurs(int**, coords*,int**);
+#endif // GENERATION_H__
