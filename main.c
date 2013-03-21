@@ -17,6 +17,7 @@ int main()
     c = (coords*) malloc(sizeof(coords));
     int **grille_jeu;
     int i,fin=0;
+    unsigned char test_char;
 
     initCoords(c,NULL,NULL);
     alea = rand()%4;
@@ -24,18 +25,39 @@ int main()
     grille_jeu = creeTab();
 
     masque = creeTab();
-    /*
-    gotoxy(20,5);
+
+    gotoxy(20,2);
     printf("Bienvenue au Takuzu!");
-    gotoxy(20,6);
+    gotoxy(20,3);
     printf("1- Naviguez avec z,q,s,d");
-    gotoxy(20,7);
+    gotoxy(20,4);
     printf("2- Selectionnez la case a modifier avec 'Espace'");
+    gotoxy(20,5);
+    printf("3- Entrez votre choix: 0/1/Espace pour effacer une case");
+    gotoxy(20,6);
+    printf("\t 0 ou 1: entrer la valeur souhaitée");
+    gotoxy(20,7);
+    printf("\t'Espace': effacer une case");
     gotoxy(20,8);
-    printf("3- Entrez votre choix 0/1/Espace pour effacer une case");
+    printf("\t'c' : afficher l'aide au joueur");
     gotoxy(20,9);
     printf("4- Validez avec 'Entree'");
-    */
+    gotoxy(20,11);
+    printf("Codes couleur:");
+    gotoxy(20,12);
+    textcolor(LIGHTCYAN);
+    printf("\tCoup correct");
+    gotoxy(20,13);
+    textcolor(LIGHTMAGENTA);
+    printf("\tCoup correspondant a la solution");
+    gotoxy(20,14);
+    textcolor(LIGHTRED);
+    printf("\tCoup incorrect/Faux lorsque 'c' est entre");
+    gotoxy(20,15);
+    textcolor(LIGHTGREEN);
+    printf("\tcase predefinie");
+    textcolor(WHITE);
+
 
     genGrille(solution);
     genMasque(masque);
