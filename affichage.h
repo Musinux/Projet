@@ -17,8 +17,8 @@ typedef struct coords{
 }coords;
 
 
-void deplJoueur(int**,int**,int **solution,coords*);
-void affJoueur(int**,int**,coords*);
+void deplJoueur(int**,int**,coords*,int**);
+void affJoueur(int**,int**,coords*,int**);
 void affTab(int**);
 void initCoords(coords*c,coords*prec,coords*suiv);
 
