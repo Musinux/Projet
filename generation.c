@@ -43,8 +43,14 @@ void calcIndice(int *l,int **solution, int *i,int *m,int k,int type){
 
 void genMasque(int **masque){
     srand((unsigned)time(NULL));
-    int tab[43][2]={0},tab_ut=0,i=0,j=0,x,y,fin=0;
-    while(i<43){
+    int nb_masque= TAI*TAI-2.5*TAI+2;
+    int **tab;
+    int tab_ut=0,i=0,j=0,x,y,fin=0;
+    tab = (int**)malloc(sizeof(int*)*nb_masque);
+    for(i=0;i<nb_masque;i++)
+        tab[i]=(int*)malloc(2*sizeof(int));
+    i=0;
+    while(i<nb_masque){
         x= rand()%TAI;
         y= rand()%TAI;
         fin=0;
@@ -432,30 +438,57 @@ void choixMasque(int **masque, int alea)
 
 
 coords* estValide(int **grille_jeu,coords *c,int **solution){
-    int i,cpt0=0,cpt1=0;
+    int i=0,j=0,cpt0=0,cpt1=0;
+    int somme1=0,somme2=0,fin_cpt_cmp_lignes=0,cpt_lignes_stop=0,pow=1;
     if(solution!=NULL){
-        gotoxy(20,20);
-        printf("caca");
         if(grille_jeu[c->x][c->y]==solution[c->x][c->y])
             c->etat=VALIDE;
         else
             c->etat=INCORRECT;
     }
-
-    if(c->etat!=VIDE){
+    else if(c->etat!=VIDE){
         for(i=0;i<TAI;i++){
             if(grille_jeu[c->x][i]!=2){
-                if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
+        /*        if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
                         cpt1=TAI;
                 if(grille_jeu[c->x][i])
                     cpt1+=1;
                 else
-                    cpt0+=1;
+                    cpt0+=1;*/
+
+                somme1+=grille_jeu[c->x][i]*pow;
+                pow *=10;
+            }
+            else{
+                cpt_lignes_stop=1;
             }
         }
-        if(cpt0>(TAI/2) || cpt1>(TAI/2)){
+
+
+        pow=1;
+        for(i=0;i<TAI && fin_cpt_cmp_lignes==0;i++){
+
+            if(i != c->x){
+                somme2=0;
+                pow=1;
+                for(j=0;j<TAI;j++){
+                    somme2+=grille_jeu[i][j]*pow;
+                    pow*=10;
+                }
+                if(somme2==somme1){
+                    fin_cpt_cmp_lignes=1;
+                }
+            }
+        }
+
+        if(fin_cpt_cmp_lignes)
+        {
+            printf("banzia");
+        }
+        printf("%d,    %d     ",somme1,somme2);
+        if(cpt0>(TAI/2) || cpt1>(TAI/2) || (fin_cpt_cmp_lignes && !cpt_lignes_stop)){
             gotoxy(20,18);
-            printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
+            printf("coup incorrect, cpt=%d,%d,%d,%d,%d              ",cpt0,cpt1,fin_cpt_cmp_lignes,somme1,somme2);
             c->etat=INCORRECT;
         }
         else{
@@ -472,13 +505,13 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
             }
             if(cpt0>(TAI/2) || cpt1>(TAI/2)){
                 gotoxy(20,18);
-                printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
+                //printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
                 c->etat=INCORRECT;
 
             }
             else{
                 gotoxy(20,18);
-                printf("coup correct, cpt=%d,%d",cpt0,cpt1);
+                //printf("coup correct, cpt=%d,%d",cpt0,cpt1);
                 c->etat=CORRECT;
             }
         }
