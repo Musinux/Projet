@@ -10,6 +10,6 @@ void choixMasque(int**,int);
 void initgrille_jeu(int **,int **, int **);
 int** creeTab();
 void supprTab(int **tab);
-coords* estValide(int **,coords *);
-void checkErreurs(int**, coords*);
+coords* estValide(int **,coords *,int**);
+void checkErreurs(int**, coords*,int**);
 #endif // GENERATION_H__
