@@ -48,10 +48,9 @@ int main()
     while(fin==0){
         //clrscr();
         gotoxy(1,3);
-        affJoueur(grille_jeu, masque, c);
-        deplJoueur(grille_jeu, masque,solution, c);
-        checkErreurs(grille_jeu, c);
-        c= estValide(grille_jeu, c);
+        affJoueur(grille_jeu, masque, c, NULL);
+        deplJoueur(grille_jeu, masque, c, solution);
+        c= estValide(grille_jeu, c, NULL);
     }
 
     printf("\n");
