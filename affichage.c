@@ -16,11 +16,11 @@ void initCoords(coords*c,coords*prec,coords*suiv){
     c->suiv=(suiv!=NULL)?suiv:NULL;
 }
 
-void affTab(int **tab){
+void affTab(int **tab,int dist){
     int i,j;
 
     for(i=0;i<TAI;i++){
-        gotoxy(20,3+i);
+        gotoxy(20+dist,3+i);
         for(j=0;j<TAI;j++){
             printf("%d ",tab[i][j]);
         }
@@ -40,7 +40,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         prec=prec->prec;
         errors[prec->x][prec->y]=prec->etat;
     }
-    //affTab(errors);
+    //affTab(errors, 18);
     //clrscr();
     for(i=0;i<TAI;i++)
     {
@@ -52,7 +52,6 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                         textcolor(LIGHTCYAN);
                         break;
                     case VALIDE:
-                        printf("caca power");
                         textcolor(LIGHTMAGENTA);
                         break;
                     case INCORRECT:
@@ -111,15 +110,16 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         affJoueur(grille_jeu, masque, co, NULL);
         gotoxy(x,y);
         c=getchar();
-        if(c=='a'){
-            affTab(solution);
-        }
-        else if(c=='c'){
+
+        if(c=='c'){
 
             checkErreurs(grille_jeu, co, solution);
             gotoxy(1,3);
             affJoueur(grille_jeu,masque,co,solution);
             Sleep(5000);
+            checkErreurs(grille_jeu, co, NULL);
+            gotoxy(1,3);
+            affJoueur(grille_jeu,masque,co,NULL);
         }
     }
     if(c!=' '){
