@@ -431,8 +431,17 @@ void choixMasque(int **masque, int alea)
 }
 
 
-coords* estValide(int **grille_jeu,coords *c){
+coords* estValide(int **grille_jeu,coords *c,int **solution){
     int i,cpt0=0,cpt1=0;
+    if(solution!=NULL){
+        gotoxy(20,20);
+        printf("caca");
+        if(grille_jeu[c->x][c->y]==solution[c->x][c->y])
+            c->etat=VALIDE;
+        else
+            c->etat=INCORRECT;
+    }
+
     if(c->etat!=VIDE){
         for(i=0;i<TAI;i++){
             if(grille_jeu[c->x][i]!=2){
@@ -486,14 +495,14 @@ coords* estValide(int **grille_jeu,coords *c){
     return c;
 }
 
-void checkErreurs(int **grille_jeu,coords *c)
+void checkErreurs(int **grille_jeu,coords *c, int **solution)
 {
     coords *suiv,*prec;
     gotoxy(20,10);
     while(c->prec!=NULL){
         c=c->prec;
-        estValide(grille_jeu, c);
-        if(c->etat==VALIDE || c->etat==VIDE){
+        estValide(grille_jeu, c, solution);
+        if(c->etat==VIDE){
             suiv = c->suiv;
             prec = c->prec;
             suiv->prec = c->prec;
