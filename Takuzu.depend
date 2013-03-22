@@ -82,3 +82,46 @@
 	"affichage.h"
 	"generation.h"
 
+1363526406 source:c:\users\louis\dropbox\s2p1 programmation\projet\conio.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<windows.h>
+	<string.h>
+	"conio.h"
+
+1363526406 c:\users\louis\dropbox\s2p1 programmation\projet\conio.h
+	<stdio.h>
+
+1363992238 source:c:\users\louis\dropbox\s2p1 programmation\projet\affichage.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"generation.h"
+	"affichage.h"
+
+1363985255 c:\users\louis\dropbox\s2p1 programmation\projet\generation.h
+	"affichage.h"
+
+1363991730 c:\users\louis\dropbox\s2p1 programmation\projet\affichage.h
+
+1363991295 source:c:\users\louis\dropbox\s2p1 programmation\projet\generation.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"affichage.h"
+	"generation.h"
+
+1363991812 source:c:\users\louis\dropbox\s2p1 programmation\projet\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"affichage.h"
+	"generation.h"
+

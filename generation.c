@@ -78,6 +78,7 @@ void genGrille(int **solution)
     #endif
 
     int i,j,k,l[TAI]={0},m=0,n,o,p,cpt_simili;
+    int erreur=0;
 
     // i et j sont des compteurs.
     // k est une variable qui prend +1 lorsqu'on ajoute un 1 à une ligne, et -1 lorsqu'on ajoute un 0.
@@ -89,7 +90,8 @@ void genGrille(int **solution)
 
 
     for(i=0;i<TAI;i++){ // i descend
-        for(j=0;j<TAI;j++){ // j va vers la droite
+        erreur=0;
+        for(j=0;j<TAI && !erreur;j++){ // j va vers la droite
 
             if(j==0){ // au début on met le compteur à 0
                 k=0;
@@ -109,13 +111,13 @@ void genGrille(int **solution)
                 }
                 else{ // sinon, on recommence la génération de la ligne, vu que c'est un cas impossible à gérer
                     calcIndice(l,solution,&i,&m,k,0);
-                    break;
+                    erreur=1;
                 }
             }
             else if(j>=2 && solution[i][j-1]==solution[i][j-2]){ // si juste la ligne a deux chiffres identiques
                 if(((l[j]==1 || k==2) && solution[i][j-1]==0) || ((l[j]==-1 || k==-2) && solution[i][j-1]==1)){
                     calcIndice(l,solution,&i,&m,k,5);
-                    break;
+                    erreur=1;
                 }
                 else{
                     solution[i][j]= solution[i][j-1]?0:1;
@@ -128,7 +130,7 @@ void genGrille(int **solution)
             else if(i>=2 && solution[i-1][j]==solution[i-2][j]){ // si juste la colonne a deux chiffres identiques
                 if(((l[j]==2 || k==1) && solution[i-1][j]==0) || ((l[j]==-2 || k==-1) && solution[i-1][j]==1)){
                     calcIndice(l,solution,&i,&m,k,6);
-                    break;
+                    erreur=1;
                 }
                 else{
                     solution[i][j]= solution[i-1][j]?0:1;
@@ -141,7 +143,7 @@ void genGrille(int **solution)
             else if((k==2 && l[j]==-2)||(k==-2 && l[j]==2)) { // si on se retrouve avec des valeurs inverses pour k et l[]
                 // pas d'autre solution que de regénérer la ligne, avec les mêmes conditions que pour précédement
                 calcIndice(l,solution,&i,&m,k,1);
-                break;
+                erreur=1;
             }
             else if(k==2 || l[j]==2) { // cas où on a trop de 1
                 if((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
@@ -156,7 +158,7 @@ void genGrille(int **solution)
                     // il n'y a forcément qu'une solution possible pour cette ligne.
                     // si k ou l[] == 2 dans cette situation, la seule solution est de regénérer la grille
                     calcIndice(l,solution,&i,&m,k,2);
-                    break;
+                    erreur=1;
                 }
             }
             else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
@@ -169,14 +171,14 @@ void genGrille(int **solution)
                 }
                 else{
                     calcIndice(l,solution,&i,&m,k,3);
-                    break;
+                    erreur=1;
                 }
             }
             else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
                 if((j==TAI-1 && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
                     // un 0 pour la colonne, on est coincé, on regénère la ligne.
                     calcIndice(l,solution,&i,&m,k,4);
-                    break;
+                    erreur=1;
                 }
                 else if(j==TAI-1){ // si on n'est qu'à la fin d'une ligne
                     if(k==-1){ // s'il faut un 1
@@ -218,82 +220,86 @@ void genGrille(int **solution)
                 cpt_debug+=1;
                 #endif
             }
-            k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
-            l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
-            #ifdef DEBUG
-            debug_ligne[cpt_debug]=solution[i][j]+48;
-            cpt_debug+=1;
-            debug_ligne[cpt_debug]=' ';
-            cpt_debug+=1;
-            #endif
-            if(j==TAI-1) // si on est à la fin de la ligne
-            {
+            if(!erreur){
+                k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
+                l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
                 #ifdef DEBUG
-                gotoxy(1,3+i);
-                printf("%s",debug_ligne);
-                printf("| %d         \n",k);
+                debug_ligne[cpt_debug]=solution[i][j]+48;
+                cpt_debug+=1;
+                debug_ligne[cpt_debug]=' ';
+                cpt_debug+=1;
                 #endif
-                int cpt_simili=0;
-                for(n=0;n<i;n++) // on teste toutes les lignes à chaque fois
+
+                if(j==TAI-1) // si on est à la fin de la ligne
                 {
-                    cpt_simili=0;
-                    for(o=0;o<TAI;o++) // lignes
+                    #ifdef DEBUG
+                    gotoxy(1,3+i);
+                    printf("%s",debug_ligne);
+                    printf("| %d         \n",k);
+                    #endif
+                    int cpt_simili=0;
+                    for(n=0;n<i;n++) // on teste toutes les lignes à chaque fois
                     {
-                        if(i>0 && solution[i][o] == solution[n][o]){
-                            cpt_simili+=1;
-                        }
-                    }
-                    if(cpt_simili==8){
-                        calcIndice(l,solution,&i,&m,k,7);
-                        n=i+1;
-                    }
-                }
-                if(n=i+1)
-                    break;
-
-
-                #ifdef DEBUG
-
-
-                int o;
-                for(o=0;o<TAI;o++){
-                    if(l[o]>=0)
-                        printf(" %d ",l[o]);
-                    else
-                        printf("%d ",l[o]);
-                }
-                printf("\n");
-
-                printf("%d %d %d %d %d %d %d %d | %d\n",solution[i][0],solution[i][1],solution[i][2],solution[i][3],solution[i][4],solution[i][5],solution[i][6],solution[i][7],k);
-                #endif
-                if(i==TAI-1){
-                    // n,o,p
-                    cpt_simili=0;
-                    for(n=0;n<j;n++) // on teste toutes les lignes à chaque fois
-                    {
+                        cpt_simili=0;
                         for(o=0;o<TAI;o++) // lignes
                         {
-                            if(i>0 && solution[o][j] == solution[o][n]){
+                            if(i>0 && solution[i][o] == solution[n][o]){
                                 cpt_simili+=1;
                             }
                         }
                         if(cpt_simili==8){
-                            calcIndice(l,solution,&i,&m,k,8);
-                            n=j+1;
+                            calcIndice(l,solution,&i,&m,k,7);
+                            n=i+1;
                         }
                     }
-                    if(n=j+1)
-                        break;
-                    #ifdef DEBUG
-                    printf("_ _ _ _ _ _ _ _\n");
-                    printf("%d %d %d %d %d %d %d %d \n\n",l[0],l[1],l[2],l[3],l[4],l[5],l[6],l[7]);
-                    #endif
-                    m=0;
-                }
-                else{
-                    m=0;
-                }
+                    if(n==i+1)
+                        erreur=1;
+                    else{
+                        #ifdef DEBUG
 
+
+                        int o;
+                        for(o=0;o<TAI;o++){
+                            if(l[o]>=0)
+                                printf(" %d ",l[o]);
+                            else
+                                printf("%d ",l[o]);
+                        }
+                        printf("\n");
+
+                        printf("%d %d %d %d %d %d %d %d | %d\n",solution[i][0],solution[i][1],solution[i][2],solution[i][3],solution[i][4],solution[i][5],solution[i][6],solution[i][7],k);
+                        #endif
+                        if(i==TAI-1){
+                            // n,o,p
+                            cpt_simili=0;
+                            for(n=0;n<j;n++) // on teste toutes les lignes à chaque fois
+                            {
+                                for(o=0;o<TAI;o++) // lignes
+                                {
+                                    if(i>0 && solution[o][j] == solution[o][n]){
+                                        cpt_simili+=1;
+                                    }
+                                }
+                                if(cpt_simili==8){
+                                    calcIndice(l,solution,&i,&m,k,8);
+                                    n=j+1;
+                                }
+                            }
+                            if(n==j+1)
+                                erreur=1;
+                            else{
+                                #ifdef DEBUG
+                                printf("_ _ _ _ _ _ _ _\n");
+                                printf("%d %d %d %d %d %d %d %d \n\n",l[0],l[1],l[2],l[3],l[4],l[5],l[6],l[7]);
+                                #endif
+                                m=0;
+                            }
+                        }
+                        else{
+                            m=0;
+                        }
+                    }
+                }
             }
         }
 
@@ -449,12 +455,12 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
     else if(c->etat!=VIDE){
         for(i=0;i<TAI;i++){
             if(grille_jeu[c->x][i]!=2){
-        /*        if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
+                if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
                         cpt1=TAI;
                 if(grille_jeu[c->x][i])
                     cpt1+=1;
                 else
-                    cpt0+=1;*/
+                    cpt0+=1;
 
                 somme1+=grille_jeu[c->x][i]*pow;
                 pow *=10;
@@ -481,11 +487,6 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
             }
         }
 
-        if(fin_cpt_cmp_lignes)
-        {
-            printf("banzia");
-        }
-        printf("%d,    %d     ",somme1,somme2);
         if(cpt0>(TAI/2) || cpt1>(TAI/2) || (fin_cpt_cmp_lignes && !cpt_lignes_stop)){
             gotoxy(20,18);
             printf("coup incorrect, cpt=%d,%d,%d,%d,%d              ",cpt0,cpt1,fin_cpt_cmp_lignes,somme1,somme2);
@@ -493,6 +494,9 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
         }
         else{
             cpt0=cpt1=0;
+            pow=1;
+            somme2=somme1=0;
+            cpt_lignes_stop=0;
             for(i=0;i<TAI;i++){
                 if(grille_jeu[i][c->y]!=2){
                     if(i>0 && i<TAI-1 && grille_jeu[i-1][c->y]==grille_jeu[i][c->y] && grille_jeu[i+1][c->y]==grille_jeu[i][c->y])
@@ -501,16 +505,38 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
                         cpt1+=1;
                     else
                         cpt0+=1;
+                    somme1+=grille_jeu[c->x][i]*pow;
+                    pow *=10;
+                }
+                else{
+                    cpt_lignes_stop=1;
                 }
             }
-            if(cpt0>(TAI/2) || cpt1>(TAI/2)){
-                gotoxy(20,18);
+
+            pow=1;
+            fin_cpt_cmp_lignes=0;
+            for(i=0;i<TAI && fin_cpt_cmp_lignes==0;i++){
+                if(i != c->x){
+                    somme2=0;
+                    pow=1;
+                    for(j=0;j<TAI;j++){
+                        somme2+=grille_jeu[i][j]*pow;
+                        pow*=10;
+                    }
+                    if(somme2==somme1){
+                        fin_cpt_cmp_lignes=1;
+                    }
+                }
+            }
+
+            if(cpt0>(TAI/2) || cpt1>(TAI/2) || (fin_cpt_cmp_lignes && !cpt_lignes_stop)){
+                //gotoxy(20,18);
                 //printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
                 c->etat=INCORRECT;
 
             }
             else{
-                gotoxy(20,18);
+                //gotoxy(20,18);
                 //printf("coup correct, cpt=%d,%d",cpt0,cpt1);
                 c->etat=CORRECT;
             }

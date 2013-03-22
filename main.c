@@ -39,24 +39,23 @@ int main()
     gotoxy(20,7);
     printf("\t'Espace': effacer une case");
     gotoxy(20,8);
-    printf("\t'c' : afficher l'aide au joueur");
-    gotoxy(20,9);
     printf("4- Validez avec 'Entree'");
-    gotoxy(20,11);
+    gotoxy(60,11);
     printf("Codes couleur:");
-    gotoxy(20,12);
+    gotoxy(60,12);
     textcolor(LIGHTCYAN);
-    printf("\tCoup correct");
-    gotoxy(20,13);
-    textcolor(LIGHTMAGENTA);
-    printf("\tCoup correspondant a la solution");
-    gotoxy(20,14);
+    printf("Coup valide");
+    gotoxy(60,13);
+    textcolor(LIGHTBLUE);
+    printf("Coup correct");
+    gotoxy(60,14);
     textcolor(LIGHTRED);
-    printf("\tCoup incorrect/Faux lorsque 'c' est entre");
-    gotoxy(20,15);
+    printf("Coup invalide");
+    gotoxy(60,15);
     textcolor(LIGHTGREEN);
-    printf("\tcase predefinie");
-    textcolor(WHITE);
+    printf("case predefinie");
+    affMenu(0,0);
+    affMenu(1,3);
 
 
     genGrille(solution);
