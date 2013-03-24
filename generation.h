@@ -13,4 +13,7 @@ int** creeTab();
 void supprTab(int **tab);
 coords* estValide(int **,coords *,int**);
 int checkErreurs(int**, coords*,int**);
+
+void rempliAuto(int **grille_jeu);
+
 #endif // GENERATION_H__
