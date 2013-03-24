@@ -1,16 +1,17 @@
 #ifndef COORDS_H_
 #define COORDS_H_
 
-typedef enum e_etat{
+typedef enum e_etat{  // ici les états donnent POURQUOI il y a une erreur, sauf dans le cas
+    // de rempliAuto, là ça indique POURQUOI c'est BON.
 VIDE,
-ZEROS,
-UNS,
-LIGS,
-COLS,
-TROIS,
-VALIDE,
-CORRECT,
-INCORRECT
+ZEROS, // trop de zeros sur la ligne/colonne
+UNS, // trop de un sur la ligne/colonne
+LIGS, // deux lignes identiques
+COLS, // deux colonnes identiques
+TROIS, // 3 zéros/un sur la ligne/colonne
+VALIDE, // correcspond aux regles du takuzu
+CORRECT, // correspond à la solution donnée
+INCORRECT // faux.
 }e_etat;
 
 typedef struct coords{
