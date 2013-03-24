@@ -577,3 +577,47 @@ int checkErreurs(int **grille_jeu,coords *c, int **solution)
     return tout_valide;
 }
 
+void rempliAuto(int **grille_jeu)
+{
+    int i=0;
+    int j=0;
+
+    for(i=0;i<TAI;i++){
+        for(j=0;j<TAI;j++){
+            if(grille_jeu[i][j]==2){
+                if(j>=0 && j<TAI-2){
+                    if(grille_jeu[i][j+1]==0 && grille_jeu[i][j+2]==0)
+                        grille_jeu[i][j]=1;
+                    else if(grille_jeu[i][j+1]==1 && grille_jeu[i][j+2]==1)
+                        grille_jeu[i][j]=0;
+                }
+                if(j>1){
+                    if(grille_jeu[i][j-2]==0 && grille_jeu[i][j-1]==0)
+                        grille_jeu[i][j]=1;
+                    else if(grille_jeu[i][j-2]==0 && grille_jeu[i][j-1]==0)
+                        grille_jeu[i][j]=0;
+                }
+                if(i>=0 && i<TAI-2){
+                    if(grille_jeu[i+1][j]==0 && grille_jeu[i+2][j]==0)
+                        grille_jeu[i][j]=1;
+                    if(grille_jeu[i+1][j]==1 && grille_jeu[i+2][j]==1)
+                        grille_jeu[i][j]=0;
+                }
+                if(i>1){
+                    if(grille_jeu[i-2][j]==0 && grille_jeu[i-1][j]==0)
+                        grille_jeu[i][j]=1;
+                    else if(grille_jeu[i-2][j]==1 && grille_jeu[i-1][j]==1)
+                        grille_jeu[i][j]=0;
+                }
+                if(j>1 && j<TAI){
+                    if(grille_jeu[i][j-1]==0 && grille_jeu[i][j+1]==0)
+                        grille_jeu[i][j]=1;
+                    else if(grille_jeu[i][j-1]==1 && grille_jeu[i][j+1]==1)
+                        grille_jeu[i][j]=0;
+                }
+            }
+        }
+    }
+
+}
+
