@@ -3,6 +3,7 @@
 #include <time.h>
 #include <windows.h>
 #include "conio.h"
+#include "coords.h"
 #include "affichage.h"
 #include "generation.h"
 #define TAI 8
@@ -19,7 +20,7 @@ int main()
     int i,fin=0;
     unsigned char test_char;
 
-    initCoords(c,NULL,NULL);
+    initElem(NULL,NULL,NULL,c,NULL,NULL);
     alea = rand()%4;
     solution = creeTab();
     grille_jeu = creeTab();
@@ -35,25 +36,34 @@ int main()
     gotoxy(20,5);
     printf("3- Entrez votre choix: 0/1/Espace pour effacer une case");
     gotoxy(20,6);
-    printf("\t 0 ou 1: entrer la valeur souhaitée");
+    printf("\t 0 ou 1: entrer la valeur souhaitee");
     gotoxy(20,7);
     printf("\t'Espace': effacer une case");
     gotoxy(20,8);
     printf("4- Validez avec 'Entree'");
-    gotoxy(60,11);
+    gotoxy(55,11);
     printf("Codes couleur:");
-    gotoxy(60,12);
+    gotoxy(55,12);
     textcolor(LIGHTCYAN);
     printf("Coup valide");
-    gotoxy(60,13);
+    gotoxy(55,13);
     textcolor(LIGHTBLUE);
     printf("Coup correct");
-    gotoxy(60,14);
+    gotoxy(55,14);
     textcolor(LIGHTRED);
     printf("Coup invalide");
-    gotoxy(60,15);
+    gotoxy(55,15);
     textcolor(LIGHTGREEN);
     printf("case predefinie");
+    gotoxy(55,16);
+    textcolor(LIGHTMAGENTA);
+    printf("trop de 1 ou de 0");
+    gotoxy(55,17);
+    textcolor(DARKGRAY);
+    printf("lig. ou col. identiques");
+    gotoxy(55,18);
+    textcolor(YELLOW);
+    printf("plus de deux 0 ou 1 a cote");
     affMenu(0,0);
     affMenu(1,3);
 
@@ -79,5 +89,6 @@ int main()
     supprTab(solution);
     supprTab(masque);
     supprTab(grille_jeu);
+    delList(c);
     return 0;
 }

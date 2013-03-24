@@ -3,18 +3,12 @@
 #include <time.h>
 #include <windows.h>
 #include "conio.h"
+#include "coords.h"
 #include "generation.h"
 #include "affichage.h"
 #define TAI 8
 //#define DEBUG 8
 
-void initCoords(coords*c,coords*prec,coords*suiv){
-    c->x=0;
-    c->y=0;
-    c->etat=VIDE;
-    c->prec=(prec!=NULL)?prec:NULL;
-    c->suiv=(suiv!=NULL)?suiv:NULL;
-}
 
 void affTab(int **tab,int dist){
     int i,j;
@@ -34,6 +28,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     int i,j;
     coords *prec=c;
     int **errors;
+    int grille_remplie=1;
     errors = creeTab();
     errors[c->x][c->y]=c->etat;
     while(prec->prec!=NULL){
@@ -48,17 +43,32 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         {
             if(errors[i][j]!=VIDE && masque[i][j]!=0){
                 switch(errors[i][j]){
-                    case CORRECT:
-                        textcolor(LIGHTCYAN);
-                        break;
-                    case VALIDE:
-                        textcolor(LIGHTBLUE);
-                        break;
-                    case INCORRECT:
-                        textcolor(LIGHTRED);
-                        break;
-                    default:
-                        textcolor(WHITE);
+                case UNS:
+                    textcolor(LIGHTMAGENTA);
+                    break;
+                case ZEROS:
+                    textcolor(LIGHTMAGENTA);
+                    break;
+                case LIGS:
+                    textcolor(DARKGRAY);
+                    break;
+                case COLS:
+                    textcolor(DARKGRAY);
+                    break;
+                case TROIS:
+                    textcolor(YELLOW);
+                    break;
+                case CORRECT:
+                    textcolor(LIGHTBLUE);
+                    break;
+                case VALIDE:
+                    textcolor(LIGHTCYAN);
+                    break;
+                case INCORRECT:
+                    textcolor(LIGHTRED);
+                    break;
+                default:
+                    textcolor(WHITE);
                 }
             }
             else if(masque[i][j]==0)
@@ -71,10 +81,19 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
             else{
                 textcolor(RED);
                 printf(". ");
+                grille_remplie=0;
             }
             textcolor(WHITE);
         }
         printf("\n");
+    }
+    if(grille_remplie){
+        if(checkErreurs(grille_jeu,c,NULL)){
+            gotoxy(1,13);
+            textcolor(LIGHTCYAN);
+            printf("vous avez trouvé une solution VALIDE!");
+            textcolor(WHITE);
+        }
     }
 }
 
@@ -88,6 +107,7 @@ void affMenu(int mode,int etat){
         textbackground(LIGHTRED);
         printf(" ");
         textbackground(BLACK);
+        textcolor(LIGHTGREEN);
         printf(" proposer une grille a l'ordi");
         textcolor(WHITE);
         break;

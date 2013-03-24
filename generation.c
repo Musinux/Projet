@@ -3,9 +3,13 @@
 #include <time.h>
 #include <windows.h>
 #include "conio.h"
+#include "coords.h"
 #include "affichage.h"
 #include "generation.h"
 //#define DEBUG
+
+
+
 int** creeTab(){
     int **tab,i,j;
     tab =(int**) malloc(TAI*sizeof(int*));
@@ -25,20 +29,6 @@ void supprTab(int **tab){
         free(tab[i]);
     }
     free(tab);
-}
-
-void calcIndice(int *l,int **solution, int *i,int *m,int k,int type){
-
-    // et si deux fois de suite on regénère la même ligne, on repart de la ligne précédente, et ainsi de suite
-    int o,p;
-    *m+=1;
-    *i=(*i-*m>=0)?*i-*m:0;
-    for(p=0;p<TAI;p++)
-        l[p]=0;
-    for(o=0;o<=*i;o++){
-        for(p=0;p<TAI;p++)
-            l[p]=solution[o][p]?l[p]+1:l[p]-1;
-    }
 }
 
 void genMasque(int **masque){
@@ -66,6 +56,20 @@ void genMasque(int **masque){
             tab_ut+=1;
             i+=1;
         }
+    }
+}
+
+void calcIndice(int *l,int **solution, int *i,int *m,int k,int type){
+
+    // si deux fois de suite on regénère la même ligne, on repart de la ligne précédente, et ainsi de suite
+    int o,p;
+    *m+=1;
+    *i=(*i-*m>=0)?*i-*m:0;
+    for(p=0;p<TAI;p++)
+        l[p]=0;
+    for(o=0;o<=*i;o++){
+        for(p=0;p<TAI;p++)
+            l[p]=solution[o][p]?l[p]+1:l[p]-1;
     }
 }
 
@@ -220,6 +224,14 @@ void genGrille(int **solution)
                 cpt_debug+=1;
                 #endif
             }
+            #ifdef DEBUG
+            if(erreur)
+                textcolor(LIGHTRED);
+            else
+                textcolor(LIGHTGREEN);
+            printf("%d",erreur);
+            textcolor(LIGHTGREEN);
+            #endif
             if(!erreur){
                 k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
                 l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
@@ -237,8 +249,7 @@ void genGrille(int **solution)
                     printf("%s",debug_ligne);
                     printf("| %d         \n",k);
                     #endif
-                    int cpt_simili=0;
-                    for(n=0;n<i;n++) // on teste toutes les lignes à chaque fois
+                    for(n=0;n<i && !erreur;n++) // on teste toutes les lignes à chaque fois
                     {
                         cpt_simili=0;
                         for(o=0;o<TAI;o++) // lignes
@@ -249,56 +260,30 @@ void genGrille(int **solution)
                         }
                         if(cpt_simili==8){
                             calcIndice(l,solution,&i,&m,k,7);
-                            n=i+1;
+                            erreur=1;
                         }
                     }
-                    if(n==i+1)
-                        erreur=1;
-                    else{
-                        #ifdef DEBUG
-
-
-                        int o;
-                        for(o=0;o<TAI;o++){
-                            if(l[o]>=0)
-                                printf(" %d ",l[o]);
-                            else
-                                printf("%d ",l[o]);
-                        }
-                        printf("\n");
-
-                        printf("%d %d %d %d %d %d %d %d | %d\n",solution[i][0],solution[i][1],solution[i][2],solution[i][3],solution[i][4],solution[i][5],solution[i][6],solution[i][7],k);
-                        #endif
-                        if(i==TAI-1){
-                            // n,o,p
-                            cpt_simili=0;
-                            for(n=0;n<j;n++) // on teste toutes les lignes à chaque fois
-                            {
-                                for(o=0;o<TAI;o++) // lignes
-                                {
-                                    if(i>0 && solution[o][j] == solution[o][n]){
-                                        cpt_simili+=1;
-                                    }
-                                }
-                                if(cpt_simili==8){
-                                    calcIndice(l,solution,&i,&m,k,8);
-                                    n=j+1;
-                                }
-                            }
-                            if(n==j+1)
-                                erreur=1;
-                            else{
-                                #ifdef DEBUG
-                                printf("_ _ _ _ _ _ _ _\n");
-                                printf("%d %d %d %d %d %d %d %d \n\n",l[0],l[1],l[2],l[3],l[4],l[5],l[6],l[7]);
-                                #endif
-                                m=0;
+                }
+                if((i==TAI-1) && !erreur){
+                    // n,o,p
+                    for(n=0;n<j && !erreur;n++) // on teste toutes les lignes à chaque fois
+                    {
+                        cpt_simili=0;
+                        for(o=0;o<TAI ;o++) // lignes
+                        {
+                            if(j>0 && solution[o][j] == solution[o][n]){
+                                cpt_simili+=1;
                             }
                         }
-                        else{
-                            m=0;
+                        if(cpt_simili==8){
+                            calcIndice(l,solution,&i,&m,k,8);
+                            erreur=1;
                         }
                     }
+                }
+
+                if(!erreur && (j==TAI-1) && m!=0){
+                    m=0;
                 }
             }
         }
@@ -444,23 +429,42 @@ void choixMasque(int **masque, int alea)
 
 
 coords* estValide(int **grille_jeu,coords *c,int **solution){
+    /**
+    VIDE,
+    ZEROS,
+    UNS,
+    LIGS,
+    COLS,
+    TROIS,
+    VALIDE,
+    CORRECT,
+    INCORRECT
+    **/
     int i=0,j=0,cpt0=0,cpt1=0;
-    int somme1=0,somme2=0,fin_cpt_cmp_lignes=0,cpt_lignes_stop=0,pow=1;
+    int somme1=0,somme2=0,
+        fin_cpt_cmp_lignes=0,fin_cpt_cmp_cols=0,
+        cpt_lignes_stop=0,cpt_cols_stop=0,
+        pow=1;
+
     if(solution!=NULL){
         if(grille_jeu[c->x][c->y]==solution[c->x][c->y])
-            c->etat=VALIDE;
+            c->etat=CORRECT;
         else
             c->etat=INCORRECT;
     }
+
+
     else if(c->etat!=VIDE){
-        for(i=0;i<TAI;i++){
+        cpt_lignes_stop=0;
+        for(i=0;i<TAI && cpt1<TAI;i++){
             if(grille_jeu[c->x][i]!=2){
-                if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
-                        cpt1=TAI;
                 if(grille_jeu[c->x][i])
                     cpt1+=1;
                 else
                     cpt0+=1;
+                if(i>0 && i<TAI-1 && grille_jeu[c->x][i-1]==grille_jeu[c->x][i] && grille_jeu[c->x][i+1]==grille_jeu[c->x][i])
+                    cpt1=TAI;
+
 
                 somme1+=grille_jeu[c->x][i]*pow;
                 pow *=10;
@@ -472,7 +476,8 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
 
 
         pow=1;
-        for(i=0;i<TAI && fin_cpt_cmp_lignes==0;i++){
+        fin_cpt_cmp_lignes=0;
+        for(i=0;i<TAI && !fin_cpt_cmp_lignes && !cpt_lignes_stop;i++){
 
             if(i != c->x){
                 somme2=0;
@@ -487,35 +492,39 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
             }
         }
 
-        if(cpt0>(TAI/2) || cpt1>(TAI/2) || (fin_cpt_cmp_lignes && !cpt_lignes_stop)){
-            gotoxy(20,18);
-            printf("coup incorrect, cpt=%d,%d,%d,%d,%d              ",cpt0,cpt1,fin_cpt_cmp_lignes,somme1,somme2);
-            c->etat=INCORRECT;
-        }
+
+        if(fin_cpt_cmp_lignes && !cpt_lignes_stop)
+            c->etat=LIGS;
+        else if(cpt1==TAI)
+                c->etat=TROIS;
+        else if(cpt0>(TAI/2))
+            c->etat=ZEROS;
+        else if(cpt1>(TAI/2))
+            c->etat=UNS;
         else{
             cpt0=cpt1=0;
             pow=1;
             somme2=somme1=0;
-            cpt_lignes_stop=0;
-            for(i=0;i<TAI;i++){
+            cpt_cols_stop=0;
+            fin_cpt_cmp_cols=0;
+            for(i=0;i<TAI && cpt1<TAI;i++){
                 if(grille_jeu[i][c->y]!=2){
-                    if(i>0 && i<TAI-1 && grille_jeu[i-1][c->y]==grille_jeu[i][c->y] && grille_jeu[i+1][c->y]==grille_jeu[i][c->y])
-                        cpt1=TAI;
-                    else if(grille_jeu[i][c->y])
+                    if(grille_jeu[i][c->y])
                         cpt1+=1;
                     else
                         cpt0+=1;
+                    if(i>0 && i<TAI-1 && grille_jeu[i-1][c->y]==grille_jeu[i][c->y] && grille_jeu[i+1][c->y]==grille_jeu[i][c->y])
+                        cpt1=TAI;
                     somme1+=grille_jeu[c->x][i]*pow;
                     pow *=10;
                 }
                 else{
-                    cpt_lignes_stop=1;
+                    cpt_cols_stop=1;
                 }
             }
 
             pow=1;
-            fin_cpt_cmp_lignes=0;
-            for(i=0;i<TAI && fin_cpt_cmp_lignes==0;i++){
+            for(i=0;i<TAI && !fin_cpt_cmp_cols && !cpt_cols_stop;i++){
                 if(i != c->x){
                     somme2=0;
                     pow=1;
@@ -524,51 +533,47 @@ coords* estValide(int **grille_jeu,coords *c,int **solution){
                         pow*=10;
                     }
                     if(somme2==somme1){
-                        fin_cpt_cmp_lignes=1;
+                        fin_cpt_cmp_cols=1;
                     }
                 }
             }
 
-            if(cpt0>(TAI/2) || cpt1>(TAI/2) || (fin_cpt_cmp_lignes && !cpt_lignes_stop)){
-                //gotoxy(20,18);
-                //printf("coup incorrect, cpt=%d,%d",cpt0,cpt1);
-                c->etat=INCORRECT;
-
-            }
+            if(fin_cpt_cmp_cols && !cpt_cols_stop)
+                c->etat=COLS;
+            else if(cpt1==TAI)
+                c->etat=TROIS;
+            else if(cpt0>(TAI/2))
+                c->etat=ZEROS;
+            else if(cpt1>(TAI/2))
+                c->etat=UNS;
             else{
                 //gotoxy(20,18);
                 //printf("coup correct, cpt=%d,%d",cpt0,cpt1);
-                c->etat=CORRECT;
+                c->etat=VALIDE;
             }
         }
-        coords *newCoord;
-        newCoord = (coords*) malloc(sizeof(coords));
-        newCoord->x=c->x;
-        newCoord->y=c->y;
-        newCoord->etat=VIDE;
-        newCoord->prec=c;
-        newCoord->suiv=NULL;
-        c->suiv=newCoord;
-        return newCoord;
+        return addElem(c);
     }
     return c;
 }
 
-void checkErreurs(int **grille_jeu,coords *c, int **solution)
+
+
+int checkErreurs(int **grille_jeu,coords *c, int **solution)
 {
-    coords *suiv,*prec;
+    int tout_valide=1;
     gotoxy(20,10);
     while(c->prec!=NULL){
         c=c->prec;
         estValide(grille_jeu, c, solution);
         if(c->etat==VIDE){
-            suiv = c->suiv;
-            prec = c->prec;
-            suiv->prec = c->prec;
-            prec->suiv = c->suiv;
-            gotoxy(20,18);
+            c = removeElem(c);
+            gotoxy(1,18);
             printf("(%d,%d) supprime de la liste",c->x,c->y);
         }
+        else if(c->etat!=VALIDE && c->etat!=CORRECT)
+            tout_valide=0;
     }
+    return tout_valide;
 }
 
