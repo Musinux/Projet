@@ -161,10 +161,10 @@ void affMenu(int mode,int etat){
         printf("complement de 1 ou de 0");
         gotoxy(55,17);
         textcolor(DARKGRAY);
-        printf("ligne ou colonne identiques");
+        printf("ligne ou colonne identiques\n");
         gotoxy(55,18);
         textcolor(YELLOW);
-        printf("suite de deux 0 ou 1 a la suite");
+        printf("suite de deux 0 ou 1\n");
     }
 
 }
@@ -258,6 +258,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         co->etat=VIDE;
     }
     checkErreurs(grille_jeu, co, NULL);
+
     if(checkErreurs(grille_jeu, co, NULL)==1)
     {
         affMenu(2,0);
