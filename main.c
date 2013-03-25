@@ -43,27 +43,8 @@ int main()
     printf("4- Validez avec 'Entree'");
     gotoxy(55,11);
     printf("Codes couleur:");
-    gotoxy(55,12);
-    textcolor(LIGHTCYAN);
-    printf("Coup valide");
-    gotoxy(55,13);
-    textcolor(LIGHTBLUE);
-    printf("Coup correct");
-    gotoxy(55,14);
-    textcolor(LIGHTRED);
-    printf("Coup invalide");
-    gotoxy(55,15);
-    textcolor(LIGHTGREEN);
-    printf("case predefinie");
-    gotoxy(55,16);
-    textcolor(LIGHTMAGENTA);
-    printf("trop de 1 ou de 0");
-    gotoxy(55,17);
-    textcolor(DARKGRAY);
-    printf("lig. ou col. identiques");
-    gotoxy(55,18);
-    textcolor(YELLOW);
-    printf("plus de deux 0 ou 1 a cote");
+
+    affMenu(3,0);
     affMenu(0,0);
     affMenu(1,3);
 
