@@ -37,6 +37,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     }
     //affTab(errors, 18);
     //clrscr();
+    gotoxy(1,3);
     for(i=0;i<TAI;i++)
     {
         for(j=0;j<TAI;j++)
@@ -74,7 +75,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
             else if(masque[i][j]==0)
                 textcolor(LIGHTGREEN);
             else
-                textcolor(YELLOW);
+                textcolor(WHITE);
             if(grille_jeu[i][j]!=2){
                 printf("%d ",grille_jeu[i][j]);
             }
@@ -89,9 +90,9 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     }
     if(grille_remplie){
         if(checkErreurs(grille_jeu,c,NULL)){
-            gotoxy(1,13);
+            gotoxy(1,15);
             textcolor(LIGHTCYAN);
-            printf("vous avez trouv� une solution VALIDE!");
+            printf("vous avez trouve une solution VALIDE!");
             textcolor(WHITE);
         }
     }
@@ -108,7 +109,7 @@ void affMenu(int mode,int etat){
         printf(" ");
         textbackground(BLACK);
         textcolor(LIGHTGREEN);
-        printf(" proposer une grille a l'ordi");
+        printf(" remplir la grille automatiquement");
         textcolor(WHITE);
         break;
     case 1:
@@ -144,9 +145,10 @@ void affMenu(int mode,int etat){
 
 }
 
-void deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
+coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
 {
     static int aide_restante=3;
+    coords *prev_co;
     char c;
     int y=co->x+3,x=(co->y)*2+1;
     gotoxy(x,y);
@@ -202,11 +204,22 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
             affMenu(1,aide_restante);
 
         }
+        if(x==20 && y==13 && c==13){ // modifier le menu ici
+            prev_co=-1;
+            // afficher pourquoi c'est BON
+            do{
+                prev_co=co;
+                co = rempliAuto(grille_jeu,co);
+                affJoueur(grille_jeu,masque,co,NULL);
+            }while(checkErreurs(grille_jeu,co,NULL) && prev_co!=co);
+            // afficher pourquoi c'est MAUVAIS
+        }
     }
     c=0;
     while(c!='0' && c!='1' && c!=' '){
         c=0;
         gotoxy(1,3);
+        checkErreurs(grille_jeu,co,NULL);
         affJoueur(grille_jeu, masque, co, NULL);
         gotoxy(x,y);
         fflush(stdin);
@@ -221,6 +234,7 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         co->etat=VIDE;
     }
     checkErreurs(grille_jeu, co, NULL);
+    return co;
 }
 
 void affgrile(int **grid)
