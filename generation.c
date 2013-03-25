@@ -33,7 +33,7 @@ void supprTab(int **tab){
 
 void genMasque(int **masque){
     srand((unsigned)time(NULL));
-    int nb_masque= TAI*TAI-2.5*TAI+2;
+    int nb_masque= TAI*TAI-2.5*TAI-10;
     int **tab;
     int tab_ut=0,i=0,j=0,x,y,fin=0;
     tab = (int**)malloc(sizeof(int*)*nb_masque);
@@ -327,86 +327,6 @@ void initgrille_jeu(int **grille_jeu,int **solution, int **masque){
     }
 }
 
-int verifGrille(int **solution){
-    int i,j,cpt=0,k,l[TAI]={0},cpt_simili_col[TAI]={0},cpt_simili_lig=0;
-/*
-    for(i=0;i<TAI;i++){
-        cpt_simili_lig=0;
-        for(j=0;j<TAI;j++){
-            if((j!=0) && (solution[i][j]!=solution[i][j-1])){
-                cpt_simili_lig+=1;
-            }
-            if(i!=0){
-                if(solution[i][j]==solution[i-1][j])
-                    cpt_simili_col[j]+=1;
-                if(cpt_simili_col[j]==8){
-                    return -300;
-                }
-            }
-        }
-        if(cpt_simili_lig==8)
-            return -200;
-    }
-*/
-
-    for(i=0;i<TAI;i++) {
-        for(j=0;j<TAI;j++) {
-            cpt = solution[i][j]?cpt+1:cpt-1;
-        }
-    }
-    if(cpt!=0)
-        return -100;
-    else{
-        for(i=0;i<TAI;i++) {
-            for(j=0;j<TAI;j++) {
-                if(j==0) // au début on met le compteur à 0
-                    k=0;
-
-                // dans le cas où en ligne et en colonne on a deux chiffres identiques qui se succèdent
-                if((j>=2 && solution[i][j-1]==solution[i][j-2]) && (i>=2 && solution[i-1][j]==solution[i-2][j])){
-                    // si ce sont les mêmes chiffres, la nouvelle case aura l'inverse
-                    if(solution[i][j-1]!=solution[i-1][j]){
-                        return -90;
-                    }
-                }
-                else if(j>=2 && solution[i][j-1]==solution[i][j-2]){ // si juste la colonne a deux chiffres identiques
-                    if((k==1 && solution[i][j-1]==0) || (k==-1 && solution[i][j-1]==1) || (solution[i][j]==solution[i][j-1])){
-
-                        return -80;
-                    }
-                }
-                else if(i>=2 && solution[i-1][j]==solution[i-2][j]){ // si juste la ligne a deux chiffres identiques
-                    if((l[j]==1 && solution[i-1][j]==0) || (l[j]==-1 && solution[i-1][j]==1) || (solution[i][j]==solution[i-1][j])){
-                        return -70;
-                    }
-                }
-                else if((k==2 && l[j]==-2)||(k==-2 && l[j]==2))  { // si on se retrouve avec des valeurs inverses pour k et l[]
-                    return -60;
-                }
-                else if(k==2 || l[j]==2) { // cas où on a trop de 1
-                    if(((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))) && solution[i][j]!=0){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
-                        return -50;
-                    }
-                }
-                else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
-                    if(((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))) && solution[i][j]!=1){
-                        printf("\n\ni:%d   \nj:%d   \nsolution[%d][%d]:%d   \nsolution[%d][%d]:%d  \nsolution[%d][%d]:%d  \nk:%d  \nl[%d]:%d",i,j,i,j,solution[i][j],i,j-1,solution[i][j-1],i,j-2,solution[i][j-2],k,j,l[j]);
-                        return -40;
-                    }
-                }
-                else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
-                    if(((j==i && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))) || (j==TAI-1 && ((k==-1 && solution[i][j]==0)|| (k==1 && solution[i][j]==1))) || (i==TAI-1 && ((l[j]==-1 && solution[i][j]==0)|| (l[j]==1 && solution[i][j]==1))) ){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
-                        return -30;
-                    }
-                }
-                k=solution[i][j]?k+1:k-1; // on calcule le compteur de 0|1 par ligne
-                l[j]=solution[i][j]?l[j]+1:l[j]-1; // on calcule le compteur de 0|1 par colonne
-            }
-        }
-    }
-    return 1;
-}
-
 void choixMasque(int **masque, int alea)
 {
     int i,j;
@@ -563,13 +483,11 @@ int checkErreurs(int **grille_jeu,coords *c, int **solution)
 {
     int tout_valide=1;
     gotoxy(20,10);
-    while(c->prec!=NULL){
+    while(c!=NULL && c->prec!=NULL){
         c=c->prec;
         estValide(grille_jeu, c, solution);
         if(c->etat==VIDE){
             c = removeElem(c);
-            gotoxy(1,18);
-            printf("(%d,%d) supprime de la liste",c->x,c->y);
         }
         else if(c->etat!=VALIDE && c->etat!=CORRECT)
             tout_valide=0;
@@ -577,7 +495,7 @@ int checkErreurs(int **grille_jeu,coords *c, int **solution)
     return tout_valide;
 }
 
-void rempliAuto(int **grille_jeu, coords *c)
+coords* rempliAuto(int **grille_jeu, coords *c)
 {
     int i,j;
     int k,l,n;
@@ -586,15 +504,15 @@ void rempliAuto(int **grille_jeu, coords *c)
     int l1,l2;
     int ligne_compl,ligne_pas_compl;
     int solve=0;
-    c = addElem(c);
     int x=0, y=0;
+    gotoxy(1,20);
     do
     {
         solve=0;
         for(i=0;i<TAI;i++){
             for(j=0;j<TAI;j++){
-                c->x=i;
-                c->y=j;
+                //c->x=i;
+                //c->y=j;
                 n1=0;
                 n0=0;
                 nl1=0;
@@ -604,120 +522,167 @@ void rempliAuto(int **grille_jeu, coords *c)
 
                     if(j>=0 && j<TAI-2 && solve==0){ /**lorsque l'on a deux 0 ou deux 1 a la suite devant**/
                         if(grille_jeu[i][j+1]==0 && grille_jeu[i][j+2]==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux zéros devant.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux zéros devant.                               ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i][j+1]==1 && grille_jeu[i][j+2]==1 && solve==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux uns devant.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux uns devant.                                   ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                     }
                     if(j>1 && solve==0){ /**lorsque l'on a deux 0 ou deux 1 a la suite derriere**/
                         if(grille_jeu[i][j-2]==0 && grille_jeu[i][j-1]==0 ){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux zéros derriere.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux zeros derriere.                           ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i][j-2]==1 && grille_jeu[i][j-1]==1){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux uns derriere.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux uns derriere.                                  ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                     }
                     if(i>=0 && i<TAI-2 && solve==0){ /**alignés sur la même colonne**/
                         if(grille_jeu[i+1][j]==0 && grille_jeu[i+2][j]==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux zéros alignes sur la meme colonne.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux zeros alignes sur la meme colonne.       ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i+1][j]==1 && grille_jeu[i+2][j]==1){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux uns alignes devant sur la meme colonne.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux uns alignes devant sur la meme colonne.   ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                     }
                     if(i>1 && solve==0){ /**Si deux zéros ou deux uns se suivent **/
                         if(grille_jeu[i-2][j]==0 && grille_jeu[i-1][j]==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux zéros alignes sur la meme colonne .");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux zeros alignes sur la meme colonne .         ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i-2][j]==1 && grille_jeu[i-1][j]==1){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\tIl y a deux uns alignes sur la meme colonne.");
-                            affgrile(grille_jeu);
+                            printf("Il y a deux uns alignes sur la meme colonne.          ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                     }
                     if(j>0 && j<TAI && solve==0){ /**Sur la ligne, la case est entouré par deux zéros ou deux uns **/
                         if(grille_jeu[i][j-1]==0 && grille_jeu[i][j+1]==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\t La case est entoures par deux zeros sur la ligne.");
-                            affgrile(grille_jeu);
+                            printf("La case est entouree par deux zeros sur la ligne.        ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i][j-1]==1 && grille_jeu[i][j+1]==1){
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\t La case est entoures par deux uns sur la ligne.");
-                            affgrile(grille_jeu);
+                            printf("La case est entoures par deux uns sur la ligne.           ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                     }
                     if(i>0 && i<TAI-1 && solve==0){/** sur la colonne, la case est entouré par deux zéros ou deux uns **/
                         if(grille_jeu[i-1][j]==0 && grille_jeu[i+1][j]==0){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=1;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\t La case est entoures par deux zeros sur la colonne.");
-                            affgrile(grille_jeu);
+                            printf("La case est entoures par deux zeros sur la colonne.        ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
                         else if(grille_jeu[i-1][j]==1 && grille_jeu[i+1][j]==1){
+
+                            initElem(i,j,TROIS,c,c->prec,c->suiv);
+                            c = addElem(c);
                             grille_jeu[i][j]=0;
                             solve=1;
+                            gotoxy(1,19);
                             textcolor(GREEN);
-                            printf("\t\t La case est entoures par deux uns sur la colonne.");
-                            affgrile(grille_jeu);
+                            printf("La case est entoures par deux uns sur la colonne.              ");
+                            //affgrile(grille_jeu);
                             Sleep(500);
                             textcolor(WHITE);
                         }
@@ -730,20 +695,27 @@ void rempliAuto(int **grille_jeu, coords *c)
                             n1+=1;
                     }
                     if(grille_jeu[i][j]==2 && n0==4 && solve==0){/** Si il y a 3 uns sur la même ligne **/
+
+                        initElem(i,j,ZEROS,c,c->prec,c->suiv);
+                        c = addElem(c);
                         grille_jeu[i][j]=1;
                         solve=1;
+                        gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("\t\tLa ligne contient quatre zero, la case doit etre un .");
-                        affgrile(grille_jeu);
+                        printf("La ligne contient quatre zero, la case doit etre un 1.             ");
+                        //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
                     }
                     else if(grille_jeu[i][j]==2 && n1==4 && solve==0){/** Si il y a 3 zéros sur la même ligne **/
+                        initElem(i,j,UNS,c,c->prec,c->suiv);
+                        c = addElem(c);
                         grille_jeu[i][j]=0;
                         solve=1;
+                        gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("\t\tLa ligne contient quatre un, la case doit etre zero.");
-                        affgrile(grille_jeu);
+                        printf("La ligne contient quatre un, la case doit etre un 0.             ");
+                        //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
                     }
@@ -756,20 +728,28 @@ void rempliAuto(int **grille_jeu, coords *c)
                             nl1+=1;
                     }
                     if(grille_jeu[i][j]==2 && nl1==4 && solve==0){/** Si il y a 3 zéros sur la même colonne **/
+
+                        initElem(i,j,UNS,c,c->prec,c->suiv);
+                        c = addElem(c);
                         grille_jeu[i][j]=0;
                         solve=1;
+                        gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("\t\tLa colonne contient quatre un, la case doit etre zero.");
-                        affgrile(grille_jeu);
+                        printf("La colonne contient quatre un, la case doit etre zero.             ");
+                        //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
                     }
                     else if(grille_jeu[i][j]==2 && nl0==4 && solve==0){/** Si il y a 3 uns sur la même colonne **/
+
+                        initElem(i,j,ZEROS,c,c->prec,c->suiv);
+                        c = addElem(c);
                         grille_jeu[i][j]=1;
                         solve=1;
+                        gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("\t\tLa ligne contient quatre zero, la case doit etre un.");
-                        affgrile(grille_jeu);
+                        printf("La ligne contient quatre zero, la case doit etre un.                  ");
+                        //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
                     }
@@ -781,6 +761,6 @@ void rempliAuto(int **grille_jeu, coords *c)
         x++;
         y++;
     }while(grille_jeu[x][y]==2);
-
+    return c;
 }
 
