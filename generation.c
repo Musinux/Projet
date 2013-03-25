@@ -577,47 +577,87 @@ int checkErreurs(int **grille_jeu,coords *c, int **solution)
     return tout_valide;
 }
 
-void rempliAuto(int **grille_jeu)
+void rempliAuto(int **grille_jeu, coords *c)
 {
-    int i=0;
-    int j=0;
+    int i,j;
+    int k,l,n;
+    int n1=0, n0=0;
+    int nl1=0, nl0=0;
+    int l1,l2;
+    int ligne_compl,ligne_pas_compl;
+    c = addElem(c);
 
     for(i=0;i<TAI;i++){
         for(j=0;j<TAI;j++){
+            c->x=i;
+            c->y=j;
+            n1=0;
+            n0=0;
+            nl1=0;
+            nl0=0;
+            n=0;
             if(grille_jeu[i][j]==2){
-                if(j>=0 && j<TAI-2){
+
+                if(j>=0 && j<TAI-2){ /**lorsque l'on a deux 0 ou deux 1 a la suite devant**/
                     if(grille_jeu[i][j+1]==0 && grille_jeu[i][j+2]==0)
                         grille_jeu[i][j]=1;
                     else if(grille_jeu[i][j+1]==1 && grille_jeu[i][j+2]==1)
                         grille_jeu[i][j]=0;
                 }
-                if(j>1){
+                if(j>1){ /**lorsque l'on a deux 0 ou deux 1 a la suite derriere**/
                     if(grille_jeu[i][j-2]==0 && grille_jeu[i][j-1]==0)
                         grille_jeu[i][j]=1;
-                    else if(grille_jeu[i][j-2]==0 && grille_jeu[i][j-1]==0)
+                    else if(grille_jeu[i][j-2]==1 && grille_jeu[i][j-1]==1)
                         grille_jeu[i][j]=0;
                 }
-                if(i>=0 && i<TAI-2){
+                if(i>=0 && i<TAI-2){ /**alignés sur la même colonne**/
                     if(grille_jeu[i+1][j]==0 && grille_jeu[i+2][j]==0)
                         grille_jeu[i][j]=1;
                     if(grille_jeu[i+1][j]==1 && grille_jeu[i+2][j]==1)
                         grille_jeu[i][j]=0;
                 }
-                if(i>1){
+                if(i>1){ /**Si deux zéros ou deux uns se suivent **/
                     if(grille_jeu[i-2][j]==0 && grille_jeu[i-1][j]==0)
                         grille_jeu[i][j]=1;
                     else if(grille_jeu[i-2][j]==1 && grille_jeu[i-1][j]==1)
                         grille_jeu[i][j]=0;
                 }
-                if(j>1 && j<TAI){
+                if(j>0 && j<TAI){ /**Sur la ligne, la case est entouré par deux zéros ou deux uns**/
                     if(grille_jeu[i][j-1]==0 && grille_jeu[i][j+1]==0)
                         grille_jeu[i][j]=1;
                     else if(grille_jeu[i][j-1]==1 && grille_jeu[i][j+1]==1)
                         grille_jeu[i][j]=0;
                 }
+                if(i>0 && i<TAI-1){/** sur la colonne, la case est entouré **/
+                    if(grille_jeu[i-1][j]==0 && grille_jeu[i+1][j]==0)
+                        grille_jeu[i][j]=1;
+                    else if(grille_jeu[i-1][j]==1 && grille_jeu[i+1][j]==1)
+                        grille_jeu[i][j]=0;
+                }
+                /** Calcul du nombre de 1 et de 0 par lignes **/
+                for(k=0;k<TAI;k++){
+                    if(grille_jeu[k][j]==0)
+                        n0+=1;
+                    else if(grille_jeu[k][j]==1)
+                        n1+=1;
+                }
+                if(grille_jeu[i][j]==2 && n0==4)/** Si il y a 3 uns sur la même ligne **/
+                    grille_jeu[i][j]=1;
+                else if(grille_jeu[i][j]==2 && n1==4)/** Si il y a 3 zéros sur la même ligne **/
+                    grille_jeu[i][j]=0;
+
+                /** Calcul du nombre de 1 et de 0 par colonnes **/
+                for(l=0;l<TAI;l++){
+                    if(grille_jeu[i][l]==0)
+                        nl0+=1;
+                    else if(grille_jeu[i][l]==1)
+                        nl1+=1;
+                }
+                if(grille_jeu[i][j]==2 && nl1==4)/** Si il y a 3 zéros sur la même colonne **/
+                    grille_jeu[i][j]=0;
+                else if(grille_jeu[i][j]==2 && nl0==4)/** Si il y a 3 uns sur la même ligne **/
+                    grille_jeu[i][j]=1;
             }
         }
     }
-
 }
-
