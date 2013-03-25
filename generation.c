@@ -40,21 +40,23 @@ void genMasque(int **masque){
     for(i=0;i<nb_masque;i++)
         tab[i]=(int*)malloc(2*sizeof(int));
     i=0;
-    while(i<nb_masque){
-        x= rand()%TAI;
-        y= rand()%TAI;
-        fin=0;
-        for(j=0;j<tab_ut&& fin==0;j++){
-            if(tab[j][0]==x && tab[j][1]==y){
-                fin=1;
+    while(){
+        while(i<nb_masque){
+            x= rand()%TAI;
+            y= rand()%TAI;
+            fin=0;
+            for(j=0;j<tab_ut&& fin==0;j++){
+                if(tab[j][0]==x && tab[j][1]==y){
+                    fin=1;
+                }
             }
-        }
-        if(fin==0){
-            masque[x][y]=2;
-            tab[tab_ut][0]=x;
-            tab[tab_ut][1]=y;
-            tab_ut+=1;
-            i+=1;
+            if(fin==0){
+                masque[x][y]=2;
+                tab[tab_ut][0]=x;
+                tab[tab_ut][1]=y;
+                tab_ut+=1;
+                i+=1;
+            }
         }
     }
 }
@@ -735,7 +737,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                         solve=1;
                         gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("La colonne contient quatre un, la case doit etre zero.             ");
+                        printf("La colonne contient quatre un, la case doit etre zero.");
                         //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
@@ -748,7 +750,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                         solve=1;
                         gotoxy(1,19);
                         textcolor(GREEN);
-                        printf("La ligne contient quatre zero, la case doit etre un.                  ");
+                        printf("La ligne contient quatre zero, la case doit etre un.");
                         //affgrile(grille_jeu);
                         Sleep(500);
                         textcolor(WHITE);
