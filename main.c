@@ -70,7 +70,7 @@ int main()
 
     genGrille(solution);
     genMasque(masque);
-    //printf("\n\n%d",verifGrille(solution));
+
     //choixGrille(solution,alea);
 
     //choixMasque(masque, alea);
@@ -80,7 +80,7 @@ int main()
         //clrscr();
         gotoxy(1,3);
         affJoueur(grille_jeu, masque, c, NULL);
-        deplJoueur(grille_jeu, masque, c, solution);
+        c= deplJoueur(grille_jeu, masque, c, solution);
         c= estValide(grille_jeu, c, NULL);
     }
 
