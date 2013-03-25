@@ -131,19 +131,6 @@ void affMenu(int mode,int etat){
         break;
     case 2:
         gotoxy(20,12);
-        if(!etat){
-            textbackground(LIGHTRED);
-        }
-        else{
-            textbackground(LIGHTGREEN);
-        }
-        printf(" ");
-        textbackground(BLACK);
-        textcolor(LIGHTGREEN);
-        printf(" lancer la resolution");
-        break;
-    case 3:
-        gotoxy(20,12);
         gotoxy(55,12);
         textcolor(LIGHTCYAN);
         printf("Coup valide");
@@ -165,8 +152,31 @@ void affMenu(int mode,int etat){
         gotoxy(55,18);
         textcolor(YELLOW);
         printf("suite de deux 0 ou 1\n");
+        break;
+    case 3:
+        gotoxy(55,12);
+        textcolor(LIGHTCYAN);
+        printf("Coup valide");
+        gotoxy(55,13);
+        textcolor(LIGHTBLUE);
+        printf("Coup correct");
+        gotoxy(55,14);
+        textcolor(LIGHTRED);
+        printf("Coup invalide");
+        gotoxy(55,15);
+        textcolor(LIGHTGREEN);
+        printf("case predefinie");
+        gotoxy(55,16);
+        textcolor(LIGHTMAGENTA);
+        printf("trop de 1 ou de 0");
+        gotoxy(55,17);
+        textcolor(DARKGRAY);
+        printf("lig. ou col. identiques");
+        gotoxy(55,18);
+        textcolor(YELLOW);
+        printf("plus de deux 0 ou 1 a cote");
+        break;
     }
-
 }
 
 coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
@@ -236,7 +246,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
                 co = rempliAuto(grille_jeu,co);
                 affJoueur(grille_jeu,masque,co,NULL);
             }while(checkErreurs(grille_jeu,co,NULL) && prev_co!=co);
-            affMenu(3,0);
+            affMenu(32,0);
         }
     }
     c=0;
@@ -261,7 +271,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
 
     if(checkErreurs(grille_jeu, co, NULL)==1)
     {
-        affMenu(2,0);
+        affMenu(3,0);
     }
     return co;
 }
