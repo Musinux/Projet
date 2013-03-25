@@ -91,7 +91,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         if(checkErreurs(grille_jeu,c,NULL)){
             gotoxy(1,13);
             textcolor(LIGHTCYAN);
-            printf("vous avez trouvé une solution VALIDE!");
+            printf("vous avez trouvï¿½ une solution VALIDE!");
             textcolor(WHITE);
         }
     }
@@ -223,3 +223,17 @@ void deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     checkErreurs(grille_jeu, co, NULL);
 }
 
+void affgrile(int **grid)
+{
+    int i,j;
+    printf("\n");
+    for(i=0;i<TAI;i++){
+        for(j=0;j<TAI;j++){
+            if(grid[i][j]==0 || grid[i][j]==1)
+                printf("%d ",grid[i][j]);
+            else
+                printf(". ");
+        }
+        printf("\n");
+    }
+}
