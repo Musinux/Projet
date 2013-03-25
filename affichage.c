@@ -141,6 +141,30 @@ void affMenu(int mode,int etat){
         textbackground(BLACK);
         textcolor(LIGHTGREEN);
         printf(" lancer la resolution");
+        break;
+    case 3:
+        gotoxy(20,12);
+        gotoxy(55,12);
+        textcolor(LIGHTCYAN);
+        printf("Coup valide");
+        gotoxy(55,13);
+        textcolor(LIGHTBLUE);
+        printf("Coup correct");
+        gotoxy(55,14);
+        textcolor(LIGHTRED);
+        printf("Coup invalide");
+        gotoxy(55,15);
+        textcolor(LIGHTGREEN);
+        printf("case predefinie");
+        gotoxy(55,16);
+        textcolor(LIGHTMAGENTA);
+        printf("complement de 1 ou de 0");
+        gotoxy(55,17);
+        textcolor(DARKGRAY);
+        printf("ligne ou colonne identiques");
+        gotoxy(55,18);
+        textcolor(YELLOW);
+        printf("suite de deux 0 ou 1 a la suite");
     }
 
 }
@@ -206,13 +230,13 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         }
         if(x==20 && y==13 && c==13){ // modifier le menu ici
             prev_co=-1;
-            // afficher pourquoi c'est BON
+            affMenu(3,0);
             do{
                 prev_co=co;
                 co = rempliAuto(grille_jeu,co);
                 affJoueur(grille_jeu,masque,co,NULL);
             }while(checkErreurs(grille_jeu,co,NULL) && prev_co!=co);
-            // afficher pourquoi c'est MAUVAIS
+            affMenu(3,0);
         }
     }
     c=0;
