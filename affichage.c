@@ -258,6 +258,10 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         co->etat=VIDE;
     }
     checkErreurs(grille_jeu, co, NULL);
+    if(checkErreurs(grille_jeu, co, NULL)==1)
+    {
+        affMenu(2,0);
+    }
     return co;
 }
 
