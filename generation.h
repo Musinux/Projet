@@ -14,6 +14,6 @@ void supprTab(int **tab);
 coords* estValide(int **,coords *,int**);
 int checkErreurs(int**, coords*,int**);
 
-void rempliAuto(int **grille_jeu, coords *c);
+coords* rempliAuto(int **grille_jeu, coords *c);
 
 #endif // GENERATION_H__
