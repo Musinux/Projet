@@ -54,7 +54,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     {
         for(j=0;j<TAI;j++)
         {
-            if(errors[i][j]!=-1 && masque[i][j]!=0){
+            if(errors[i][j]!=-1 && errors[i][j]->etat!=VIDE && masque[i][j]!=0){
                 switch(errors[i][j]->etat){ /// couleurs en fonction des états
                 case ZEROS:
                 case UNS:
@@ -76,8 +76,6 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                 case INCORRECT:
                     textcolor(LIGHTRED);
                     break;
-                case VIDE:
-                    textcolor(WHITE);
                 }
                 if(errors[i][j]->estEnVerif>0){ /// si on est dans le cadre des véfications de grille,
                                 /// on affiche un message explicatif à chaque coup
