@@ -17,12 +17,13 @@ INCORRECT // faux.
 typedef struct coords{
     int x;
     int y;
+    int estEnVerif;
     e_etat etat;
     struct coords* prec;
     struct coords* suiv;
 }coords;
 
-void initElem(int x,int y, int etat, coords*c,coords*prec,coords*suiv);
+void initElem(int x,int y, int etat, int estEnVerif, coords*c,coords*prec,coords*suiv);
 coords* removeElem(coords*);
 coords* addElem(coords *c);
 void delList(coords *);

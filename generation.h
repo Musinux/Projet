@@ -5,15 +5,17 @@
 #define TAI 8
 void calcIndice(int*,int**,int*,int*,int,int);
 void genGrille(int**);
-void genMasque(int **);
+void genMasque(int **,int **);
 void choixGrille(int**,int);
 void choixMasque(int**,int);
 void initgrille_jeu(int **,int **, int **);
-int** creeTab();
 void supprTab(int **tab);
-coords* estValide(int **,coords *,int**);
-int checkErreurs(int**, coords*,int**);
 
+int checkErreurs(int**, coords*,int**);
+int estRemplie(int **grille_jeu);
+int** creeTab();
+
+coords* estValide(int **,coords *,int**);
 coords* rempliAuto(int **grille_jeu, coords *c);
 
 #endif // GENERATION_H__

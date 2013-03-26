@@ -20,8 +20,8 @@ int main()
     int i,fin=0;
     unsigned char test_char;
 
-    initElem(NULL,NULL,NULL,c,NULL,NULL);
-    alea = rand()%4;
+    initElem(NULL,NULL,NULL,NULL,c,NULL,NULL);
+    //alea = rand()%4;
     solution = creeTab();
     grille_jeu = creeTab();
 
@@ -50,7 +50,7 @@ int main()
 
 
     genGrille(solution);
-    genMasque(masque);
+    genMasque(masque,solution);
 
     //choixGrille(solution,alea);
 
@@ -58,7 +58,6 @@ int main()
 
     initgrille_jeu(grille_jeu,solution,masque);
     while(fin==0){
-        //clrscr();
         gotoxy(1,3);
         affJoueur(grille_jeu, masque, c, NULL);
         c= deplJoueur(grille_jeu, masque, c, solution);

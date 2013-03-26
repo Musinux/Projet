@@ -27,32 +27,39 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
 {
     int i,j;
     coords *prec=c;
-    int **errors;
+    coords ***errors;
     int grille_remplie=1;
-    errors = creeTab();
-    errors[c->x][c->y]=c->etat;
+    errors = (coords***) malloc(TAI*sizeof(coords**));
+    for(i=0;i<TAI;i++){
+        errors[i] = malloc(TAI*sizeof(coords*));
+        for(j=0;j<TAI;j++){
+            errors[i][j]=NULL;
+        }
+    }
+
+
+    errors[c->x][c->y]=c;
     while(prec->prec!=NULL){
         prec=prec->prec;
-        errors[prec->x][prec->y]=prec->etat;
+        if(errors[prec->x][prec->y]==NULL)
+            errors[prec->x][prec->y]=prec;
+        else if(prec->prec!=NULL ||prec->suiv!=NULL)
+            prec = removeElem(prec);
     }
-    //affTab(errors, 18);
-    //clrscr();
+
+
     gotoxy(1,3);
     for(i=0;i<TAI;i++)
     {
         for(j=0;j<TAI;j++)
         {
-            if(errors[i][j]!=VIDE && masque[i][j]!=0){
-                switch(errors[i][j]){
+            if(errors[i][j]!=NULL && errors[i][j]->etat!=VIDE && masque[i][j]!=0){
+                switch(errors[i][j]->etat){
+                case ZEROS:
                 case UNS:
                     textcolor(LIGHTMAGENTA);
                     break;
-                case ZEROS:
-                    textcolor(LIGHTMAGENTA);
-                    break;
                 case LIGS:
-                    textcolor(DARKGRAY);
-                    break;
                 case COLS:
                     textcolor(DARKGRAY);
                     break;
@@ -71,6 +78,11 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                 default:
                     textcolor(WHITE);
                 }
+                if(errors[i][j]->estEnVerif){
+                    affVerifs(errors[i][j]->estEnVerif);
+                    errors[i][j]->estEnVerif=0;
+                }
+
             }
             else if(masque[i][j]==0)
                 textcolor(LIGHTGREEN);
@@ -96,6 +108,64 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
             textcolor(WHITE);
         }
     }
+}
+
+void affVerifs(int val){
+    int x,y;
+    x=wherex();
+    y=wherey();
+    gotoxy(1,19);
+    switch(val){
+    case 1:
+        printf("Il y a deux zeros devant.                              ");
+        break;
+    case 2:
+        printf("Il y a deux uns devant.                                ");
+        break;
+    case 3:
+        printf("Il y a deux zeros derriere.                            ");
+        break;
+    case 4:
+        printf("Il y a deux uns derriere.                              ");
+        break;
+    case 5:
+        printf("Il y a deux zeros alignes sur la meme colonne.         ");
+        break;
+    case 6:
+        printf("Il y a deux uns alignes devant sur la meme colonne.    ");
+        break;
+    case 7:
+        printf("Il y a deux zeros alignes sur la meme colonne .        ");
+        break;
+    case 8:
+        printf("La case est entouree par deux zeros sur la ligne.      ");
+        break;
+    case 9:
+        printf("La case est entouree par deux uns sur la ligne.        ");
+        break;
+    case 10:
+        printf("La case est entouree par deux zeros sur la colonne.    ");
+        break;
+    case 11:
+        printf("La case est entouree par deux uns sur la colonne.      ");
+        break;
+    case 12:
+        printf("La ligne contient quatre zero, la case doit etre un 1. ");
+        break;
+    case 13:
+        printf("La ligne contient quatre un, la case doit etre un 0.   ");
+        break;
+    case 14:
+        printf("La colonne contient quatre un, la case doit etre zero. ");
+        break;
+    case 15:
+        printf("La ligne contient quatre zero, la case doit etre un.   ");
+        break;
+    default:
+        printf("devine.                                                ");
+    }
+    Sleep(900);
+    gotoxy(x,y);
 }
 
 void affMenu(int mode,int etat){
@@ -185,6 +255,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     coords *prev_co;
     char c;
     int y=co->x+3,x=(co->y)*2+1;
+    int erreurs=1;
     gotoxy(x,y);
     c=getch();
 
@@ -239,14 +310,16 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
 
         }
         if(x==20 && y==13 && c==13){ // modifier le menu ici
-            prev_co=-1;
+            prev_co=(coords*)-1;
             affMenu(3,0);
             do{
                 prev_co=co;
                 co = rempliAuto(grille_jeu,co);
                 affJoueur(grille_jeu,masque,co,NULL);
-            }while(checkErreurs(grille_jeu,co,NULL) && prev_co!=co);
-            affMenu(32,0);
+                erreurs= checkErreurs(grille_jeu,co,NULL);
+            }while( (erreurs && !estRemplie(grille_jeu)) && prev_co!=co);
+            if(!erreurs)
+                affMenu(4,0);
         }
     }
     c=0;
@@ -266,12 +339,6 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     else{
         grille_jeu[co->x][co->y]=2;
         co->etat=VIDE;
-    }
-    checkErreurs(grille_jeu, co, NULL);
-
-    if(checkErreurs(grille_jeu, co, NULL)==1)
-    {
-        affMenu(3,0);
     }
     return co;
 }

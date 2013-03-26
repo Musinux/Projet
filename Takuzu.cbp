@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="conio.h" />
+		<Unit filename="coords.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="coords.h" />
 		<Unit filename="generation.c">
 			<Option compilerVar="CC" />
 		</Unit>
