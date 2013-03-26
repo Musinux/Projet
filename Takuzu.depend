@@ -136,3 +136,57 @@
 	<stdlib.h>
 	"coords.h"
 
+1364228182 source:z:\projet_programmation\projet 3\projet-master\conio.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<windows.h>
+	<string.h>
+	"conio.h"
+
+1364228182 z:\projet_programmation\projet 3\projet-master\conio.h
+	<stdio.h>
+
+1364313459 source:z:\projet_programmation\projet 3\projet-master\coords.c
+	<stdio.h>
+	<stdlib.h>
+	"coords.h"
+
+1364228182 z:\projet_programmation\projet 3\projet-master\coords.h
+
+1364314937 source:z:\projet_programmation\projet 3\projet-master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"coords.h"
+	"affichage.h"
+	"generation.h"
+
+1364228182 z:\projet_programmation\projet 3\projet-master\affichage.h
+
+1364313317 z:\projet_programmation\projet 3\projet-master\generation.h
+	"coords.h"
+	"affichage.h"
+
+1364316171 source:z:\projet_programmation\projet 3\projet-master\affichage.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"coords.h"
+	"generation.h"
+	"affichage.h"
+
+1364314537 source:z:\projet_programmation\projet 3\projet-master\generation.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+	"conio.h"
+	"coords.h"
+	"affichage.h"
+	"generation.h"
+

@@ -15,16 +15,17 @@ void initElem(int x,int y, int etat, int estEnVerif, coords*c,coords*prec,coords
 coords* removeElem(coords *c){
     coords *suiv = c->suiv;
     coords *prec = c->prec;
-    if(suiv!=NULL)
-        suiv->prec = prec;
-    if(prec!=NULL)
-        prec->suiv = suiv;
-    free(c);
-    if(suiv!=NULL)
-        c=suiv;
-    else if(prec!=NULL)
-        c=prec;
-
+    if(suiv!=NULL && prec!=NULL){
+        if(suiv!=NULL)
+            suiv->prec = prec;
+        if(prec!=NULL)
+            prec->suiv = suiv;
+        free(c);
+        if(suiv!=NULL)
+            c=suiv;
+        else if(prec!=NULL)
+            c=prec;
+    }
     return c;
 }
 

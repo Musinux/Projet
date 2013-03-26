@@ -11,11 +11,12 @@ void choixMasque(int**,int);
 void initgrille_jeu(int **,int **, int **);
 void supprTab(int **tab);
 
-int checkErreurs(int**, coords*,int**);
+
 int estRemplie(int **grille_jeu);
 int** creeTab();
 
 coords* estValide(int **,coords *,int**);
 coords* rempliAuto(int **grille_jeu, coords *c);
+coords* checkErreurs(int**, coords*,int**,int *);
 
 #endif // GENERATION_H__

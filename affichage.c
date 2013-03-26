@@ -6,7 +6,6 @@
 #include "coords.h"
 #include "generation.h"
 #include "affichage.h"
-#define TAI 8
 //#define DEBUG 8
 
 
@@ -26,25 +25,24 @@ void affTab(int **tab,int dist){
 void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
 {
     int i,j;
-    coords *prec=c;
+    coords *current=c;
     coords ***errors;
-    int grille_remplie=1;
+    int grille_remplie=1,erreurs_grille=0;
+
     errors = (coords***) malloc(TAI*sizeof(coords**));
     for(i=0;i<TAI;i++){
-        errors[i] = malloc(TAI*sizeof(coords*));
+        errors[i] = (coords**) malloc(TAI*sizeof(coords*));
         for(j=0;j<TAI;j++){
-            errors[i][j]=NULL;
+            errors[i][j]=(coords*)(-1);
         }
     }
 
 
-    errors[c->x][c->y]=c;
-    while(prec->prec!=NULL){
-        prec=prec->prec;
-        if(errors[prec->x][prec->y]==NULL)
-            errors[prec->x][prec->y]=prec;
-        else if(prec->suiv!=c);
-            prec = removeElem(prec);
+    errors[current->x][current->y]=current;
+    while(current->prec!=NULL){
+        printf("+");
+        current=current->prec;
+        errors[current->x][current->y]=current;
     }
 
 
@@ -53,17 +51,13 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     {
         for(j=0;j<TAI;j++)
         {
-            if(errors[i][j]!=NULL && errors[i][j]->etat!=VIDE && masque[i][j]!=0){
+            if(errors[i][j]!=-1 && masque[i][j]!=0){
                 switch(errors[i][j]->etat){
                 case ZEROS:
-                    textcolor(LIGHTMAGENTA);
-                    break;
                 case UNS:
                     textcolor(LIGHTMAGENTA);
                     break;
                 case LIGS:
-                    textcolor(DARKGRAY);
-                    break;
                 case COLS:
                     textcolor(DARKGRAY);
                     break;
@@ -79,10 +73,10 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                 case INCORRECT:
                     textcolor(LIGHTRED);
                     break;
-                default:
+                case VIDE:
                     textcolor(WHITE);
                 }
-                if(errors[i][j]->estEnVerif){
+                if(errors[i][j]->estEnVerif>0){
                     affVerifs(errors[i][j]->estEnVerif);
                     errors[i][j]->estEnVerif=0;
                 }
@@ -92,6 +86,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                 textcolor(LIGHTGREEN);
             else
                 textcolor(WHITE);
+
             if(grille_jeu[i][j]!=2){
                 printf("%d ",grille_jeu[i][j]);
             }
@@ -105,7 +100,9 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         printf("\n");
     }
     if(grille_remplie){
-        if(checkErreurs(grille_jeu,c,NULL)){
+        printf("------------------------------------");
+        c= checkErreurs(grille_jeu,c,NULL,&erreurs_grille);
+        if(erreurs_grille){
             gotoxy(1,15);
             textcolor(LIGHTCYAN);
             printf("vous avez trouve une solution VALIDE!");
@@ -250,6 +247,23 @@ void affMenu(int mode,int etat){
         textcolor(YELLOW);
         printf("plus de deux 0 ou 1 a cote");
         break;
+    case 4:
+        gotoxy(20,2);
+        printf("Bienvenue au Takuzu!");
+        gotoxy(20,3);
+        printf("1- Naviguez avec z,q,s,d");
+        gotoxy(20,4);
+        printf("2- Selectionnez la case a modifier avec 'Espace'");
+        gotoxy(20,5);
+        printf("3- Entrez votre choix: 0/1/Espace pour effacer une case");
+        gotoxy(20,6);
+        printf("\t 0 ou 1: entrer la valeur souhaitee");
+        gotoxy(20,7);
+        printf("\t'Espace': effacer une case");
+        gotoxy(20,8);
+        printf("4- Validez avec 'Entree'");
+        gotoxy(55,11);
+        printf("Codes couleurs:");
     }
 }
 
@@ -302,25 +316,26 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
             printf(" ");
             textbackground(BLACK);
 
-            checkErreurs(grille_jeu, co, solution);
+            checkErreurs(grille_jeu, co, solution,NULL);
             gotoxy(1,3);
             affJoueur(grille_jeu,masque,co,solution);
             Sleep(5000);
-            checkErreurs(grille_jeu, co, NULL);
+            checkErreurs(grille_jeu, co, NULL,NULL);
             gotoxy(1,3);
             affJoueur(grille_jeu,masque,co,NULL);
             aide_restante-=1;
             affMenu(1,aide_restante);
 
         }
-        if(x==20 && y==13 && c==13){ // modifier le menu ici
+        if(x==20 && y==13 && c==13){
             prev_co=(coords*)-1;
-            affMenu(3,0);
+            affMenu(2,0);
             do{
                 prev_co=co;
                 co = rempliAuto(grille_jeu,co);
+                gotoxy(1,20);
                 affJoueur(grille_jeu,masque,co,NULL);
-                erreurs= checkErreurs(grille_jeu,co,NULL);
+                co= checkErreurs(grille_jeu,co,NULL,&erreurs);
             }while( (erreurs && !estRemplie(grille_jeu)) && prev_co!=co);
             if(!erreurs)
                 affMenu(4,0);
@@ -330,7 +345,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     while(c!='0' && c!='1' && c!=' '){
         c=0;
         gotoxy(1,3);
-        checkErreurs(grille_jeu,co,NULL);
+        checkErreurs(grille_jeu,co,NULL,NULL);
         affJoueur(grille_jeu, masque, co, NULL);
         gotoxy(x,y);
         fflush(stdin);
