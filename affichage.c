@@ -43,7 +43,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         prec=prec->prec;
         if(errors[prec->x][prec->y]==NULL)
             errors[prec->x][prec->y]=prec;
-        else if(prec->prec!=NULL ||prec->suiv!=NULL)
+        else if(prec->suiv!=c);
             prec = removeElem(prec);
     }
 
@@ -56,10 +56,14 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
             if(errors[i][j]!=NULL && errors[i][j]->etat!=VIDE && masque[i][j]!=0){
                 switch(errors[i][j]->etat){
                 case ZEROS:
+                    textcolor(LIGHTMAGENTA);
+                    break;
                 case UNS:
                     textcolor(LIGHTMAGENTA);
                     break;
                 case LIGS:
+                    textcolor(DARKGRAY);
+                    break;
                 case COLS:
                     textcolor(DARKGRAY);
                     break;
