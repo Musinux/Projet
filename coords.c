@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "conio.h"
 #include "coords.h"
 
 void initElem(int x,int y, int etat, int estEnVerif, coords*c,coords*prec,coords*suiv){
 
-    c->x=(x!=NULL)?x:NULL;
-    c->y=(y!=NULL)?y:NULL;
+    c->x=(x!=0)?x:0;
+    c->y=(y!=0)?y:0;
     c->etat=(etat!=NULL)?etat:VIDE;
     c->prec=(prec!=NULL)?prec:NULL;
     c->suiv=(suiv!=NULL)?suiv:NULL;
-    c->estEnVerif=(estEnVerif!=NULL)?estEnVerif:0;
+    c->estEnVerif=(estEnVerif!=0)?estEnVerif:0;
 }
 
 coords* removeElem(coords *c){
     coords *suiv = c->suiv;
     coords *prec = c->prec;
-    if(suiv!=NULL && prec!=NULL){
+    if(suiv!=NULL || prec!=NULL){
         if(suiv!=NULL)
             suiv->prec = prec;
         if(prec!=NULL)
@@ -32,7 +33,7 @@ coords* removeElem(coords *c){
 coords* addElem(coords *c){
     coords *newCoord;
     newCoord = (coords*) malloc(sizeof(coords));
-    initElem(c->x,c->y,NULL,NULL,newCoord,c,c->suiv);
+    initElem(c->x,c->y,VIDE,0,newCoord,c,c->suiv);
     c->suiv=newCoord;
     return newCoord;
 }

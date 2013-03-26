@@ -93,7 +93,7 @@
 1363526406 c:\users\louis\dropbox\s2p1 programmation\projet\conio.h
 	<stdio.h>
 
-1364256160 source:c:\users\louis\dropbox\s2p1 programmation\projet\affichage.c
+1364339947 source:c:\users\louis\dropbox\s2p1 programmation\projet\affichage.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -103,13 +103,13 @@
 	"generation.h"
 	"affichage.h"
 
-1364252930 c:\users\louis\dropbox\s2p1 programmation\projet\generation.h
+1364332278 c:\users\louis\dropbox\s2p1 programmation\projet\generation.h
 	"coords.h"
 	"affichage.h"
 
 1364245602 c:\users\louis\dropbox\s2p1 programmation\projet\affichage.h
 
-1364255948 source:c:\users\louis\dropbox\s2p1 programmation\projet\generation.c
+1364336834 source:c:\users\louis\dropbox\s2p1 programmation\projet\generation.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -119,7 +119,7 @@
 	"affichage.h"
 	"generation.h"
 
-1364255956 source:c:\users\louis\dropbox\s2p1 programmation\projet\main.c
+1364339859 source:c:\users\louis\dropbox\s2p1 programmation\projet\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -131,9 +131,10 @@
 
 1364244237 c:\users\louis\dropbox\s2p1 programmation\projet\coords.h
 
-1364254564 source:c:\users\louis\dropbox\s2p1 programmation\projet\coords.c
+1364339509 source:c:\users\louis\dropbox\s2p1 programmation\projet\coords.c
 	<stdio.h>
 	<stdlib.h>
+	"conio.h"
 	"coords.h"
 
 1364228182 source:z:\projet_programmation\projet 3\projet-master\conio.c
