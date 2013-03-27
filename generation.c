@@ -34,9 +34,9 @@ void supprTab(int **tab){
 void genMasque(int **masque,int **solution){
     /// on initialise la fonction de generation de nombres aleatoires
     srand((unsigned)time(NULL));
-    int nb_masque= TAI*TAI-2.5*TAI-6; /// on définit le nombre de cases affichées par le masque
-    int **tab, /// tableau qui contient les coordonnées des points affichés, pour vérifier qu'on
-    /// entre pas deux fois les mêmes coordonnées
+    int nb_masque= TAI*TAI-2.5*TAI-6; /// on dÃ©finit le nombre de cases affichÃ©es par le masque
+    int **tab, /// tableau qui contient les coordonnÃ©es des points affichÃ©s, pour vÃ©rifier qu'on
+    /// entre pas deux fois les mÃªmes coordonnÃ©es
     **grille_jeu = creeTab();
     int tab_ut=0, /// taille utile de tab
         i=0,j=0,
@@ -44,23 +44,23 @@ void genMasque(int **masque,int **solution){
         fin=0,
         remplie=0;
 
-    coords *c_prec, /// coordonnée précédente, pour les comparaisons
+    coords *c_prec, /// coordonnÃ©e prÃ©cÃ©dente, pour les comparaisons
      *c;
 
     tab = (int**)malloc(sizeof(int*)*nb_masque);
-    for(i=0;i<nb_masque;i++) /// on alloue de la mémoire à notre tableau
+    for(i=0;i<nb_masque;i++) /// on alloue de la mÃ©moire Ã  notre tableau
         tab[i]=(int*)malloc(2*sizeof(int));
 
 
-    while(!remplie){ /// tant que rempliAuto n'est pas capable de résoudre la grille seul
-        for(i=0;i<TAI;i++){ /// on met le masque et la grille à zéro
+    while(!remplie){ /// tant que rempliAuto n'est pas capable de rÃ©soudre la grille seul
+        for(i=0;i<TAI;i++){ /// on met le masque et la grille Ã  zÃ©ro
             for(j=0;j<TAI;j++){
                 masque[i][j]=0;
                 grille_jeu[i][j]=0;
             }
         }
-        delList(c); /// on supprime une éventuelle ancienne liste chainée
-        c = (coords*) malloc(sizeof(coords)); /// on recrée un élément de liste
+        delList(c); /// on supprime une Ã©ventuelle ancienne liste chainÃ©e
+        c = (coords*) malloc(sizeof(coords)); /// on recrÃ©e un Ã©lÃ©ment de liste
         initElem(1,1,VIDE,NULL,c,NULL,NULL); /// initialisation
         tab_ut=0;
         i=0;
@@ -68,28 +68,28 @@ void genMasque(int **masque,int **solution){
             x= rand()%TAI;
             y= rand()%TAI;
             fin=0;
-            for(j=0;j<tab_ut && fin==0;j++){ /// on vérifie qu'on a pas déjà entré les coordonnées
+            for(j=0;j<tab_ut && fin==0;j++){ /// on vÃ©rifie qu'on a pas dÃ©jÃ  entrÃ© les coordonnÃ©es
                 if(tab[j][0]==x && tab[j][1]==y){
                     fin=1;
                 }
             }
-            if(fin==0){ /// si ce sont des nouvelles coordonnées, on les entre
+            if(fin==0){ /// si ce sont des nouvelles coordonnÃ©es, on les entre
                 masque[x][y]=2;
                 tab[tab_ut][0]=x;
                 tab[tab_ut][1]=y;
                 tab_ut+=1;
-                i+=1; /// et on incrémente le nombre de cases remplies de 1.
+                i+=1; /// et on incrÃ©mente le nombre de cases remplies de 1.
             }
         }
-        /// on remplit grille_jeu avec les données collectées
+        /// on remplit grille_jeu avec les donnÃ©es collectÃ©es
         initgrille_jeu(grille_jeu,solution,masque);
-        do{ /// on vérifie que rempliAuto est capable de finir la grille, sinon on recommence.
+        do{ /// on vÃ©rifie que rempliAuto est capable de finir la grille, sinon on recommence.
             c_prec=c;
             c = rempliAuto(grille_jeu,c);
             remplie = estRemplie(grille_jeu);
         }while(!remplie && c_prec!=c);
     }
-    supprTab(grille_jeu); /// on rend la mémoire
+    supprTab(grille_jeu); /// on rend la mÃ©moire
     delList(c);
 }
 
@@ -106,7 +106,7 @@ int estRemplie(int **grille_jeu){
 
 void calcIndice(int *l,int **solution, int *i,int *m,int k,int type){
 
-    // si deux fois de suite on regénère la même ligne, on repart de la ligne précédente, et ainsi de suite
+    // si deux fois de suite on regÃ©nÃ¨re la mÃªme ligne, on repart de la ligne prÃ©cÃ©dente, et ainsi de suite
     int o,p;
     *m+=1;
 
@@ -132,33 +132,33 @@ void genGrille(int **solution)
     int erreur=0;
 
     // i et j sont des compteurs.
-    // k est une variable qui prend +1 lorsqu'on ajoute un 1 à une ligne, et -1 lorsqu'on ajoute un 0.
-    // le but étant d'avoir un k==0 à la fin de la ligne
+    // k est une variable qui prend +1 lorsqu'on ajoute un 1 Ã  une ligne, et -1 lorsqu'on ajoute un 0.
+    // le but Ã©tant d'avoir un k==0 Ã  la fin de la ligne
 
     // l[] est un tableau comprenant les valeurs pour chaque colonne.
-    // même concept que pour le k.
-    // après plusieurs essais, si |k| ou |l[]| > 2, il y aura forcément une erreur par la suite.
+    // mÃªme concept que pour le k.
+    // aprÃ¨s plusieurs essais, si |k| ou |l[]| > 2, il y aura forcÃ©ment une erreur par la suite.
 
 
     for(i=0;i<TAI;i++){ // i descend
         erreur=0;
         for(j=0;j<TAI && !erreur;j++){ // j va vers la droite
 
-            if(j==0){ // au début on met le compteur à 0
+            if(j==0){ // au dÃ©but on met le compteur Ã  0
                 k=0;
                 #ifdef DEBUG
                 cpt_debug=0;
                 #endif
             }
             if(err_fin_tableau && i==TAI-1){
-                m=3;
+                m=6;
                 calcIndice(l,solution,&i,&m,k,9);
                 erreur=1;
                 err_fin_tableau=0;
             }
-            // dans le cas où en ligne et en colonne on a deux chiffres identiques qui se succèdent
+            // dans le cas oÃ¹ en ligne et en colonne on a deux chiffres identiques qui se succÃ¨dent
             if((j>=2 && solution[i][j-1]==solution[i][j-2]) && (i>=2 && solution[i-1][j]==solution[i-2][j])){
-                // si ce sont les mêmes chiffres, la nouvelle case aura l'inverse
+                // si ce sont les mÃªmes chiffres, la nouvelle case aura l'inverse
                 if(solution[i][j-1]==solution[i-1][j]){
                     solution[i][j]= solution[i-1][j]?0:1;
                     #ifdef DEBUG
@@ -166,7 +166,7 @@ void genGrille(int **solution)
                     cpt_debug+=1;
                     #endif
                 }
-                else{ // sinon, on recommence la génération de la ligne, vu que c'est un cas impossible à gérer
+                else{ // sinon, on recommence la gÃ©nÃ©ration de la ligne, vu que c'est un cas impossible Ã  gÃ©rer
                     calcIndice(l,solution,&i,&m,k,0);
                     erreur=1;
                 }
@@ -198,11 +198,11 @@ void genGrille(int **solution)
                 }
             }
             else if((k==2 && l[j]==-2)||(k==-2 && l[j]==2)) { // si on se retrouve avec des valeurs inverses pour k et l[]
-                // pas d'autre solution que de regénérer la ligne, avec les mêmes conditions que pour précédement
+                // pas d'autre solution que de regÃ©nÃ©rer la ligne, avec les mÃªmes conditions que pour prÃ©cÃ©dement
                 calcIndice(l,solution,&i,&m,k,1);
                 erreur=1;
             }
-            else if(k==2 || l[j]==2) { // cas où on a trop de 1
+            else if(k==2 || l[j]==2) { // cas oÃ¹ on a trop de 1
                 if((k==2 && (j!=TAI-1 || l[j]==2)) || (l[j]==2 && (i!=TAI-1 || k==2))){ // si on a un k ou l[] == 2 et qu'on est pas dans une situation inextricable
                     solution[i][j]=0;
                     #ifdef DEBUG
@@ -211,14 +211,14 @@ void genGrille(int **solution)
                     #endif
                 }
                 else{
-                    // lorsqu'on est arrivé à la dernière ligne ou dernière colonne
-                    // il n'y a forcément qu'une solution possible pour cette ligne.
-                    // si k ou l[] == 2 dans cette situation, la seule solution est de regénérer la grille
+                    // lorsqu'on est arrivÃ© Ã  la derniÃ¨re ligne ou derniÃ¨re colonne
+                    // il n'y a forcÃ©ment qu'une solution possible pour cette ligne.
+                    // si k ou l[] == 2 dans cette situation, la seule solution est de regÃ©nÃ©rer la grille
                     calcIndice(l,solution,&i,&m,k,2);
                     erreur=1;
                 }
             }
-            else if(k==-2 || l[j]==-2) { // cas où on a trop de 0
+            else if(k==-2 || l[j]==-2) { // cas oÃ¹ on a trop de 0
                 if((k==-2 && (j!=TAI-1 || l[j]==-2)) || (l[j]==-2 && (i!=TAI-1 || k==-2))){
                     solution[i][j]=1;
                     #ifdef DEBUG
@@ -231,13 +231,13 @@ void genGrille(int **solution)
                     erreur=1;
                 }
             }
-            else if(j==TAI-1 || i==TAI-1) { // si on est à une fin de ligne ou de colonne
-                if((j==TAI-1 && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))){ // si on est à la toute fin et qu'il faut un 1 pour la ligne et
-                    // un 0 pour la colonne, on est coincé, on regénère la ligne.
+            else if(j==TAI-1 || i==TAI-1) { // si on est Ã  une fin de ligne ou de colonne
+                if((j==TAI-1 && i==TAI-1) && ((k==1 && l[j]==-1) || (k==-1 && l[j]==1))){ // si on est Ã  la toute fin et qu'il faut un 1 pour la ligne et
+                    // un 0 pour la colonne, on est coincÃ©, on regÃ©nÃ¨re la ligne.
                     calcIndice(l,solution,&i,&m,k,4);
                     erreur=1;
                 }
-                else if(j==TAI-1){ // si on n'est qu'à la fin d'une ligne
+                else if(j==TAI-1){ // si on n'est qu'Ã  la fin d'une ligne
                     if(k==-1){ // s'il faut un 1
                         solution[i][j]=1;
                         #ifdef DEBUG
@@ -253,7 +253,7 @@ void genGrille(int **solution)
                         #endif
                     }
                 }
-                else if(i==TAI-1){ // si on n'est qu'à la fin d'une colonne
+                else if(i==TAI-1){ // si on n'est qu'Ã  la fin d'une colonne
                     if(l[j]==-1){ // s'il faut un 1
                         solution[i][j]=1;
                         #ifdef DEBUG
@@ -270,7 +270,7 @@ void genGrille(int **solution)
                     }
                 }
             }
-            else{ // si aucune des conditions précédentes n'est rencontrées, on génère un nombre aléatoire
+            else{ // si aucune des conditions prÃ©cÃ©dentes n'est rencontrÃ©es, on gÃ©nÃ¨re un nombre alÃ©atoire
                 solution[i][j]=rand()%2;
                 #ifdef DEBUG
                 debug_ligne[cpt_debug]='^';
@@ -295,14 +295,14 @@ void genGrille(int **solution)
                 cpt_debug+=1;
                 #endif
 
-                if(j==TAI-1) // si on est à la fin de la ligne
+                if(j==TAI-1) // si on est Ã  la fin de la ligne
                 {
                     #ifdef DEBUG
                     gotoxy(1,3+i);
                     printf("%s",debug_ligne);
                     printf("| %d         \n",k);
                     #endif
-                    for(n=0;n<i && !erreur;n++) // on teste toutes les lignes à chaque fois
+                    for(n=0;n<i && !erreur;n++) // on teste toutes les lignes Ã  chaque fois
                     {
                         cpt_simili=0;
                         for(o=0;o<TAI;o++) // lignes
@@ -319,7 +319,7 @@ void genGrille(int **solution)
                 }
                 if((i==TAI-1) && !erreur){
                     // n,o,p
-                    for(n=0;n<j && !erreur;n++) // on teste toutes les lignes à chaque fois
+                    for(n=0;n<j && !erreur;n++) // on teste toutes les lignes Ã  chaque fois
                     {
                         cpt_simili=0;
                         for(o=0;o<TAI ;o++) // lignes
@@ -352,7 +352,7 @@ void choixGrille(int **grille,int alea){
 
 
 
-    // on se déplace jusqu'à la bonne grille
+    // on se dÃ©place jusqu'Ã  la bonne grille
     for(i=0;i<73*alea;i++)
     {
         fgetc(fgrille);
@@ -387,7 +387,7 @@ void choixMasque(int **masque, int alea)
     int i,j;
     FILE *fmasque= fopen("masque.txt","r");
 
-    // on se déplace jusqu'à la bonne grille
+    // on se dÃ©place jusqu'Ã  la bonne grille
     for(i=0;i<73*alea;i++)
         fgetc(fmasque);
 
@@ -406,19 +406,19 @@ void choixMasque(int **masque, int alea)
 void estValide(int **grille_jeu,coords *c,int **solution){
     int i=0,j=0,cpt0=0,cpt1=0;
     int somme1=0,somme2=0, /// pour comparer les lignes et les colonnes
-        fin_cpt_cmp_lignes=0,fin_cpt_cmp_cols=0, /// booléains de fin de boucles
+        fin_cpt_cmp_lignes=0,fin_cpt_cmp_cols=0, /// boolÃ©ains de fin de boucles
         cpt_lignes_stop=0,cpt_cols_stop=0, /// booleains de fin de boucles
         pow=1; //// variable "puissance de 10"
 
-    if(solution!=NULL){ /// si on a décidé de vérifier la correspondance avec la solution
+    if(solution!=NULL){ /// si on a dÃ©cidÃ© de vÃ©rifier la correspondance avec la solution
         if(grille_jeu[c->x][c->y]==solution[c->x][c->y])
             c->etat=CORRECT;
         else
             c->etat=INCORRECT;
     }
-    else if(c->etat!=VIDE){ /// cas général
+    else if(c->etat!=VIDE){ /// cas gÃ©nÃ©ral
         cpt_lignes_stop=0;
-        for(i=0;i<TAI && cpt1<TAI;i++){ /// on vérifie qu'il n'y a pas trop de 0 ou de 1 dans une ligne
+        for(i=0;i<TAI && cpt1<TAI;i++){ /// on vÃ©rifie qu'il n'y a pas trop de 0 ou de 1 dans une ligne
             if(grille_jeu[c->x][i]!=2){
                 if(grille_jeu[c->x][i])
                     cpt1+=1;
@@ -437,11 +437,11 @@ void estValide(int **grille_jeu,coords *c,int **solution){
         }
 
 
-        pow=1; // on réinitialise
+        pow=1; // on rÃ©initialise
         fin_cpt_cmp_lignes=0;
         for(i=0;i<TAI && !fin_cpt_cmp_lignes && !cpt_lignes_stop;i++){
 
-            if(i != c->x){ /// si on n'est pas à la ligne corespondant à somme1
+            if(i != c->x){ /// si on n'est pas Ã  la ligne corespondant Ã  somme1
                 somme2=0;
                 pow=1;
                 for(j=0;j<TAI;j++){
@@ -455,7 +455,7 @@ void estValide(int **grille_jeu,coords *c,int **solution){
         }
 
 
-        if(fin_cpt_cmp_lignes && !cpt_lignes_stop) /// indication des problèmes rencontrés, pour les afficher plus tard
+        if(fin_cpt_cmp_lignes && !cpt_lignes_stop) /// indication des problÃ¨mes rencontrÃ©s, pour les afficher plus tard
             c->etat=LIGS;
         else if(cpt1==TAI)
                 c->etat=TROIS;
@@ -465,7 +465,7 @@ void estValide(int **grille_jeu,coords *c,int **solution){
             c->etat=UNS;
         else{
 
-            /// même chose que précédement, pour les colonnes.
+            /// mÃªme chose que prÃ©cÃ©dement, pour les colonnes.
             cpt0=cpt1=0;
             pow=1;
             somme2=somme1=0;
@@ -520,11 +520,11 @@ void estValide(int **grille_jeu,coords *c,int **solution){
 int checkErreurs(int **grille_jeu,coords *c, int **solution){
     int tout_valide=1;
     if(c!=NULL)
-        estValide(grille_jeu, c, solution); /// on véfifie l'etat du point
+        estValide(grille_jeu, c, solution); /// on vÃ©fifie l'etat du point
     while(c!=NULL && c->prec!=NULL){ /// tant qu'on a pas atteint le dernier element
         c=c->prec; /// on passe au suivant.
 
-            estValide(grille_jeu, c, solution); /// on véfifie l'etat du point
+            estValide(grille_jeu, c, solution); /// on vÃ©fifie l'etat du point
 
         if(c->etat==VIDE){ /// s'il est vide on le supprime
             c = removeElem(c);
@@ -584,7 +584,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                         grille_jeu[i][j]=0;
                     }
                 }
-                if(i>=0 && i<TAI-2 && solve==0){ /**alignés sur la même colonne**/
+                if(i>=0 && i<TAI-2 && solve==0){ /**alignÃ©s sur la mÃªme colonne**/
                     if(grille_jeu[i+1][j]==0 && grille_jeu[i+2][j]==0){
                         initElem(i,j,TROIS,5,c,c->prec,c->suiv);
                         solve=1;
@@ -600,7 +600,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
 
                     }
                 }
-                if(i>1 && solve==0){ /**Si deux zéros ou deux uns se suivent **/
+                if(i>1 && solve==0){ /**Si deux zÃ©ros ou deux uns se suivent **/
                     if(grille_jeu[i-2][j]==0 && grille_jeu[i-1][j]==0){
                         initElem(i,j,TROIS,7,c,c->prec,c->suiv);
                         solve=1;
@@ -615,7 +615,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                         grille_jeu[i][j]=0;
                     }
                 }
-                if(j>0 && j<TAI-1 && solve==0){ /**Sur la ligne, la case est entouré par deux zéros ou deux uns **/
+                if(j>0 && j<TAI-1 && solve==0){ /**Sur la ligne, la case est entourÃ© par deux zÃ©ros ou deux uns **/
                     if(grille_jeu[i][j-1]==0 && grille_jeu[i][j+1]==0){
                         initElem(i,j,TROIS,8,c,c->prec,c->suiv);
                         solve=1;
@@ -630,7 +630,7 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                         grille_jeu[i][j]=0;
                     }
                 }
-                if(i!=0 && (i<(TAI-1)) && (solve==0)) {/** sur la colonne, la case est entouré par deux zéros ou deux uns **/
+                if(i!=0 && (i<(TAI-1)) && (solve==0)) {/** sur la colonne, la case est entourÃ© par deux zÃ©ros ou deux uns **/
                     if(grille_jeu[i-1][j]==0 && grille_jeu[i+1][j]==0){
                         initElem(i,j,TROIS,10,c,c->prec,c->suiv);
                         solve=1;
@@ -653,14 +653,14 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                     else if(grille_jeu[k][j]==1)
                         n1+=1;
                 }
-                if(grille_jeu[i][j]==2 && n0==4 && solve==0){/** Si il y a 3 uns sur la même ligne **/
+                if(grille_jeu[i][j]==2 && n0==4 && solve==0){/** Si il y a 3 uns sur la mÃªme ligne **/
                     initElem(i,j,TROIS,12,c,c->prec,c->suiv);
                     solve=1;
                     c = addElem(c);
                     grille_jeu[i][j]=1;
 
                 }
-                else if(grille_jeu[i][j]==2 && n1==4 && solve==0){/** Si il y a 3 zéros sur la même ligne **/
+                else if(grille_jeu[i][j]==2 && n1==4 && solve==0){/** Si il y a 3 zÃ©ros sur la mÃªme ligne **/
                     initElem(i,j,UNS,13,c,c->prec,c->suiv);
                     solve=1;
                     c = addElem(c);
@@ -674,14 +674,14 @@ coords* rempliAuto(int **grille_jeu, coords *c)
                     else if(grille_jeu[i][l]==1)
                         nl1+=1;
                 }
-                if(grille_jeu[i][j]==2 && nl1==4 && solve==0){/** Si il y a 3 zéros sur la même colonne **/
+                if(grille_jeu[i][j]==2 && nl1==4 && solve==0){/** Si il y a 3 zÃ©ros sur la mÃªme colonne **/
                     initElem(i,j,UNS,14,c,c->prec,c->suiv);
                     solve=1;
                     c = addElem(c);
                     grille_jeu[i][j]=0;
 
                 }
-                else if(grille_jeu[i][j]==2 && nl0==4 && solve==0){/** Si il y a 3 uns sur la même colonne **/
+                else if(grille_jeu[i][j]==2 && nl0==4 && solve==0){/** Si il y a 3 uns sur la mÃªme colonne **/
                     initElem(i,j,TROIS,15,c,c->prec,c->suiv);
                     solve=1;
                     c = addElem(c);
