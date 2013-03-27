@@ -28,7 +28,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     coords ***errors;
     int grille_remplie=1,erreurs_grille=0;
 
-    /// errors est un tableau de coords, qui contient chaque coordonnée à sa bonne position, avec son état
+    /// errors est un tableau de coords, qui contient chaque coordonnÃ©e Ã  sa bonne position, avec son Ã©tat
     errors = (coords***) malloc(TAI*sizeof(coords**));
     for(i=0;i<TAI;i++){ /// allocation
         errors[i] = (coords**) malloc(TAI*sizeof(coords*));
@@ -39,8 +39,8 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
     if(c->x>=0 && c->x<TAI && c->y>=0 && c->y<TAI && c->etat!=VIDE)
         errors[c->x][c->y]=c; /// d'abord on met le curseur actuel au bon endroit
 
-    while(c!=NULL && c->prec!=NULL){ /// puis on remplit le tableau jusqu'à ce qu'on ait atteint le dernier curseur
-        c=c->prec; /// à chaque itération on se déplace au curseur précédent
+    while(c!=NULL && c->prec!=NULL){ /// puis on remplit le tableau jusqu'Ã  ce qu'on ait atteint le dernier curseur
+        c=c->prec; /// Ã  chaque itÃ©ration on se dÃ©place au curseur prÃ©cÃ©dent
         if(errors[c->x][c->y]==-1 && c->etat!=VIDE){
             errors[c->x][c->y]=c; /// on le place au bon endroit
         }/*
@@ -56,7 +56,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         for(j=0;j<TAI;j++)
         {
             if(errors[i][j]!=-1 && errors[i][j]->etat!=VIDE && masque[i][j]!=0){
-                switch(errors[i][j]->etat){ /// couleurs en fonction des états
+                switch(errors[i][j]->etat){ /// couleurs en fonction des Ã©tats
                 case ZEROS:
                 case UNS:
                     textcolor(LIGHTMAGENTA);
@@ -78,10 +78,10 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
                     textcolor(LIGHTRED);
                     break;
                 }
-                if(errors[i][j]->estEnVerif>0){ /// si on est dans le cadre des véfications de grille,
-                                /// on affiche un message explicatif à chaque coup
+                if(errors[i][j]->estEnVerif>0){ /// si on est dans le cadre des vÃ©fications de grille,
+                                /// on affiche un message explicatif Ã  chaque coup
                     affVerifs(errors[i][j]->estEnVerif);
-                    errors[i][j]->estEnVerif=0; /// puis on efface son état de vérification
+                    errors[i][j]->estEnVerif=0; /// puis on efface son Ã©tat de vÃ©rification
                 }
 
             }
@@ -103,7 +103,7 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
         }
         printf("\n");
     }
-    if(grille_remplie){ /// si la grille est remplie on vérifie qu'elle est correcte, si oui on affiche la fin.
+    if(grille_remplie){ /// si la grille est remplie on vÃ©rifie qu'elle est correcte, si oui on affiche la fin.
         if(checkErreurs(grille_jeu,c,NULL)){
             gotoxy(1,15);
             textcolor(LIGHTCYAN);
@@ -172,7 +172,9 @@ void affVerifs(int val){
 }
 
 void affMenu(int mode,int etat){
-
+    int x,y;
+    x = wherex();
+    y = wherey();
     switch(mode){
     case 0: // mode standard
         gotoxy(20,11);
@@ -266,13 +268,25 @@ void affMenu(int mode,int etat){
         printf("4- Validez avec 'Entree'");
         gotoxy(55,11);
         printf("Codes couleurs:");
+        break;
+    case 5: // si le joueur a commencÃ© Ã  jouer, on l'empeche de remplir la grille automatiquement
+        gotoxy(20,13);
+        textbackground(LIGHTGRAY);
+        printf(" ");
+        textbackground(BLACK);
+        textcolor(LIGHTGRAY);
+        printf(" remplir la grille automatiquement");
+        textcolor(WHITE);
+        break;
     }
+    gotoxy(x,y);
 }
 
 coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
 {
-    static int aide_restante=3; /// l'utilisateur n'a le droit qu'à 3 indices
-    coords *prev_co; /// coordonnée permettant de comparer l'ancienne et la nouvelle
+    static int aide_restante=3; /// l'utilisateur n'a le droit qu'Ã  3 indices
+    static int jeu_commence =0;
+    coords *prev_co; /// coordonnÃ©e permettant de comparer l'ancienne et la nouvelle
     char c;
     int y=co->x+3, /// on convertit les coords du tableau en coords visuelles
         x=(co->y)*2+1;
@@ -280,21 +294,21 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     gotoxy(x,y);
     c=getch();
 
-    while(c!=' ' || masque[co->x][co->y]==0 || x==20) /// tant qu'on a pas rentré 'Espace' sur une case valide de la grille
+    while(c!=' ' || masque[co->x][co->y]==0 || x==20) /// tant qu'on a pas rentrÃ© 'Espace' sur une case valide de la grille
     {
         if((c=='q' || c=='Q') && x>1){ /// vers la gauche
-            if(x!=20) /// si on se déplace dans la grille
+            if(x!=20) /// si on se dÃ©place dans la grille
                 x-=2;
-            else{ /// si on se déplace du menu vers la grille
+            else{ /// si on se dÃ©place du menu vers la grille
                 y=co->x+3;
                 x=(co->y)*2+1;
             }
 
         }
         else if(c=='d' || c=='D'){ /// vers la droite
-            if(x<15) /// si on se déplace dans la grille
+            if(x<15) /// si on se dÃ©place dans la grille
                 x+=2;
-            else{ /// si on se déplace vers le menu
+            else{ /// si on se dÃ©place vers le menu
                 x=20;
                 y=12;
             }
@@ -305,12 +319,12 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         else if((c=='s'||c=='S') && ((x!=20 && y<10)||(x==20 && y<13))){ /// vers le bas
             y+=1;
         }
-        if(x!=20 || y<10){ /// si on est dans la grille, on enregistre les coordonnées dans le coord.
+        if(x!=20 || y<10){ /// si on est dans la grille, on enregistre les coordonnÃ©es dans le coord.
             co->x=y-3;
             co->y=(x-1)/2;
         }
         gotoxy(x,y);
-        fflush(stdin); /// on vide le buffer au cas où l'utilisateur aurait rentré plus d'une valeur
+        fflush(stdin); /// on vide le buffer au cas oÃ¹ l'utilisateur aurait rentrÃ© plus d'une valeur
         c=getch();
         if(x==20 && y==12 && c==13 && aide_restante>0){ /// si l'utilisateur clique sur 'afficher un indice'
 
@@ -329,7 +343,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
             aide_restante-=1;
             affMenu(1,aide_restante);
         }
-        if(x==20 && y==13 && c==13){
+        if(x==20 && y==13 && c==13 && !jeu_commence){
             prev_co=(coords*)-1;
             affMenu(2,0);
             do{
@@ -354,6 +368,7 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         c=getchar();
     }
     if(c!=' '){
+        jeu_commence=1;
         grille_jeu[co->x][co->y]=c-48;
         co->etat=INCORRECT;
         checkErreurs(grille_jeu,co,NULL);
@@ -363,6 +378,8 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
         co->etat=VIDE;
         checkErreurs(grille_jeu,co,NULL);
     }
+    if(jeu_commence)
+        affMenu(5,0);
     return co;
 }
 
