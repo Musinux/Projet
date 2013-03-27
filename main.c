@@ -41,7 +41,7 @@ int main()
         gotoxy(1,3);
         affJoueur(grille_jeu, masque, c, NULL); /// on affiche la grille
         c = deplJoueur(grille_jeu, masque, c, solution); /// on affiche le curseur
-        estValide(grille_jeu, c, NULL); /// on vérifie la validité des cases entrées
+        //estValide(grille_jeu, c, NULL); /// on vérifie la validité des cases entrées
         c = addElem(c);
     }
 

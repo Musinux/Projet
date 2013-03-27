@@ -519,9 +519,12 @@ void estValide(int **grille_jeu,coords *c,int **solution){
 
 int checkErreurs(int **grille_jeu,coords *c, int **solution){
     int tout_valide=1;
+    if(c!=NULL)
+        estValide(grille_jeu, c, solution); /// on véfifie l'etat du point
     while(c!=NULL && c->prec!=NULL){ /// tant qu'on a pas atteint le dernier element
         c=c->prec; /// on passe au suivant.
-        estValide(grille_jeu, c, solution); /// on véfifie l'etat du point
+
+            estValide(grille_jeu, c, solution); /// on véfifie l'etat du point
 
         if(c->etat==VIDE){ /// s'il est vide on le supprime
             c = removeElem(c);

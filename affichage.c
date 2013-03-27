@@ -36,14 +36,15 @@ void affJoueur(int **grille_jeu, int **masque, coords* c, int **solution)
             errors[i][j]=(coords*)(-1);
         }
     }
-    if(c->x>=0 && c->x<TAI && c->y>=0 && c->y<TAI)
+    if(c->x>=0 && c->x<TAI && c->y>=0 && c->y<TAI && c->etat!=VIDE)
         errors[c->x][c->y]=c; /// d'abord on met le curseur actuel au bon endroit
+
     while(c!=NULL && c->prec!=NULL){ /// puis on remplit le tableau jusqu'à ce qu'on ait atteint le dernier curseur
         c=c->prec; /// à chaque itération on se déplace au curseur précédent
-        if(errors[c->x][c->y]==-1){
+        if(errors[c->x][c->y]==-1 && c->etat!=VIDE){
             errors[c->x][c->y]=c; /// on le place au bon endroit
-        }
-        /*else{
+        }/*
+        else{
             c = removeElem(c); /// s'il y a doublon, on supprime le curseur le plus ancien
         }*/
     }
@@ -336,9 +337,9 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
                 co = rempliAuto(grille_jeu,co);
                 gotoxy(1,20);
                 affJoueur(grille_jeu,masque,co,NULL);
-                erreurs = checkErreurs(grille_jeu,co,NULL);
-            }while( (erreurs && !estRemplie(grille_jeu)) && prev_co!=co);
-            if(!erreurs)
+                erreurs = estRemplie(grille_jeu);
+            }while(!erreurs && prev_co!=co);
+            if(erreurs)
                 affMenu(4,0);
         }
     }
@@ -355,10 +356,12 @@ coords *deplJoueur(int **grille_jeu,int **masque, coords* co, int **solution)
     if(c!=' '){
         grille_jeu[co->x][co->y]=c-48;
         co->etat=INCORRECT;
+        checkErreurs(grille_jeu,co,NULL);
     }
     else{
         grille_jeu[co->x][co->y]=2;
         co->etat=VIDE;
+        checkErreurs(grille_jeu,co,NULL);
     }
     return co;
 }
